@@ -1,0 +1,87 @@
+server:
+  port: 8383
+
+spring:
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pocket_cloud?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: root
+  # redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      # password:
+      database: 0 # 指定redis的分库(共16个,0-15)
+
+  #邮件服务配置
+  mail:
+    host: smtp.qq.com # 发送邮件服务器地址
+    port: 465 # 发送邮件端口
+    protocol: smtps # 协议
+    username: 1580374360@qq.com # 发送邮件的邮箱也就是你开通服务的邮箱
+    password: jfekiwcgoslwgcgf # 开通服务后得到的授权码
+    default-encoding: utf-8 # 邮件内容的编码
+    properties:
+      mail:
+        smtp:
+          auth: true  # 启用SMTP身份验证
+          starttls:
+            enable: true  # 启用STARTTLS安全连接
+          ssl:
+            enable: true  # 启用SSL加密连接
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    # 邮件发送者
+    from: PocketCloud <1580374360@qq.com>
+
+  # 配置Freemarker模板引擎
+  freemarker:
+    template-loader-path: classpath:/templates/ # 指定模板加载路径
+    suffix: ftl # 设置模板文件的后缀为ftl
+
+# mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.xiaohui.pocket.model.entity
+  configuration:
+    # 驼峰下划线转换
+    map-underscore-to-camel-case: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# springdoc配置： https://springdoc.org/properties.html
+springdoc:
+  swagger-ui:
+    # 自定义Swagger UI的路径
+    path: /swagger-ui.html
+    # 对操作进行排序的方式，这里选择字母排序
+    operations-sorter: alpha
+    # 对标签进行排序的方式，这里选择字母排序
+    tags-sorter: alpha
+  # API文档相关配置
+  api-docs:
+    # 自定义API文档的路径
+    path: /v3/api-docs
+  # API分组配置
+  group-configs:
+    - group: 'PocketCloud'
+      # 匹配的路径，这里匹配所有路径
+      paths-to-match: "/**"
+      # 需要扫描的包，以确定哪些控制器包含在当前分组中
+      packages-to-scan:
+        - com.xiaohui.pocket.controller
+  # 默认的扁平化参数对象配置，设置为true以启用
+  default-flat-param-object: true
+
+# knife4j 接口文档配置
+knife4j:
+  # 是否开启 Knife4j 增强功能
+  enable: true  # 设置为 true 表示开启增强功能
+  # 生产环境配置
+  production: false  # 设置为 true 表示在生产环境中不显示文档，为 false 表示显示文档（通常在开发环境中使用）
+  setting:
+    language: zh_cn
