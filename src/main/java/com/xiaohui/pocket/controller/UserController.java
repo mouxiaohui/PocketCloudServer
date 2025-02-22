@@ -1,10 +1,14 @@
 package com.xiaohui.pocket.controller;
 
+import com.xiaohui.pocket.common.annotation.Log;
+import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
+import com.xiaohui.pocket.model.form.UserRegisterForm;
 import com.xiaohui.pocket.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +27,8 @@ public class UserController {
 
     @Operation(summary = "注册用户")
     @PostMapping
-    public Result<Void> register() {
+    @Log(value = "注册用户", module = LogModuleEnum.USER)
+    public Result<Void> register(@RequestBody @Valid UserRegisterForm userRegisterForm) {
         return Result.success();
     }
 

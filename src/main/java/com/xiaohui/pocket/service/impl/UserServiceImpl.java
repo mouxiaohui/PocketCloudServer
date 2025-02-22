@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 用户服务接口
+ *
  * @author xiaohui
  * @since 2025/2/19
  */

@@ -11,6 +11,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 /**
+ * 邮件服务接口层
+ *
  * @author xiaohui
  * @since 2025/2/19
  */

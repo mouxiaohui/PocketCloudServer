@@ -5,6 +5,8 @@ import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
 
 /**
+ * 用户服务接口
+ *
  * @author xiaohui
  * @since 2025/2/19
  */
