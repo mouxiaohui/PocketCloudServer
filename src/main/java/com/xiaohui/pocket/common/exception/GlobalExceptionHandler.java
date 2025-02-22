@@ -9,6 +9,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -70,28 +71,30 @@ public class GlobalExceptionHandler {
     /**
      * 处理方法参数校验异常
      * <p>
-     * 当使用 @Email 注解对方法参数进行验证时，如果验证失败，
-     * 会抛出 HandlerMethodValidationException 异常。
-     */
-    @ExceptionHandler(HandlerMethodValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public <T> Result<T> processException(HandlerMethodValidationException e) {
-        log.error("HandlerMethodValidationException:{}", e.getMessage());
-        return Result.failed(ResultCode.INVALID_USER_INPUT);
-    }
-
-    /**
-     * 处理方法参数校验异常
-     * <p>
      * 当使用 @Valid 或 @Validated 注解对方法参数进行验证时，如果验证失败，
-     * 会抛出 MethodArgumentNotValidException 异常。
+     * 会抛出 MethodArgumentNotValidException 或 HandlerMethodValidationException 异常。
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            HandlerMethodValidationException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public <T> Result<T> processException(MethodArgumentNotValidException e) {
-        log.error("MethodArgumentNotValidException:{}", e.getMessage());
-        String msg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining("；"));
-        return Result.failed(ResultCode.INVALID_USER_INPUT, msg);
+    public <T> Result<T> processException(Exception e) {
+        String errorMessage;
+
+        if (e instanceof MethodArgumentNotValidException validEx) {
+            errorMessage = validEx.getBindingResult().getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("；"));
+        } else if (e instanceof HandlerMethodValidationException handlerEx) {
+            errorMessage = handlerEx.getAllErrors().stream()
+                    .map(MessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("；"));
+        } else {
+            errorMessage = "参数校验失败";
+        }
+
+        return Result.failed(ResultCode.INVALID_USER_INPUT, errorMessage);
     }
 
     /**
