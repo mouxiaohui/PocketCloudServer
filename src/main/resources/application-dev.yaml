@@ -16,7 +16,6 @@ spring:
       port: 6379
       # password:
       database: 0 # 指定redis的分库(共16个,0-15)
-
   #邮件服务配置
   mail:
     host: smtp.qq.com # 发送邮件服务器地址
@@ -37,11 +36,17 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
     # 邮件发送者
     from: PocketCloud <1580374360@qq.com>
-
   # 配置Freemarker模板引擎
   freemarker:
     template-loader-path: classpath:/templates/ # 指定模板加载路径
     suffix: ftl # 设置模板文件的后缀为ftl
+
+Auth:
+  # 无需认证的请求路径
+  ignore-urls:
+    - /api/v1/user/login/**       # 登录接口
+    - /api/v1/code/captcha        # 图片验证码获取接口
+    - /api/v1/code/email          # 邮箱验证码发送接口
 
 # mybatis-plus配置
 mybatis-plus:
@@ -85,3 +90,32 @@ knife4j:
   production: false  # 设置为 true 表示在生产环境中不显示文档，为 false 表示显示文档（通常在开发环境中使用）
   setting:
     language: zh_cn
+
+# 验证码配置
+captcha:
+  # 验证码类型 circle-圆圈干扰验证码|gif-Gif验证码|line-干扰线验证码|shear-扭曲干扰验证码
+  type: circle
+  # 验证码宽度
+  width: 120
+  # 验证码高度
+  height: 40
+  # 验证码干扰元素个数
+  interfere-count: 2
+  # 文本透明度(0.0-1.0)
+  text-alpha: 0.8
+  # 验证码字符配置
+  code:
+    # 验证码字符类型 math-算术|random-随机字符
+    type: math
+    # 验证码字符长度，type=算术时，表示运算位数(1:个位数运算 2:十位数运算)；type=随机字符时，表示字符个数
+    length: 1
+  # 验证码字体
+  font:
+    # 字体名称 Dialog|DialogInput|Monospaced|Serif|SansSerif
+    name: SansSerif
+    # 字体样式 0-普通|1-粗体|2-斜体
+    weight: 1
+    # 字体大小
+    size: 24
+  # 验证码有效期(秒)
+  expire-seconds: 120

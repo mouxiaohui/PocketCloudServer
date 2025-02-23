@@ -1,5 +1,8 @@
 package com.xiaohui.pocket.config;
 
+import cn.hutool.core.text.AntPathMatcher;
+import cn.hutool.core.util.ArrayUtil;
+import com.xiaohui.pocket.config.property.AuthProperties;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -15,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 
+import java.util.stream.Stream;
+
 /**
  * OpenAPI 接口文档配置
  *
@@ -25,9 +30,11 @@ import org.springframework.http.HttpHeaders;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class SwaggerConfig {
+public class OpenApiConfig {
 
     private final Environment environment;
+
+    private final AuthProperties authProperties;
 
     /**
      * 接口文档信息
@@ -75,15 +82,14 @@ public class SwaggerConfig {
             if (openApi.getPaths() != null) {
                 openApi.getPaths().forEach((path, pathItem) -> {
 
-                    // todo 忽略认证的请求无需携带 Authorization
-//                    String[] ignoreUrls = securityProperties.getIgnoreUrls();
-//                    if (ArrayUtil.isNotEmpty(ignoreUrls)) {
-//                        // Ant 匹配忽略的路径，不添加Authorization
-//                        AntPathMatcher antPathMatcher = new AntPathMatcher();
-//                        if (Stream.of(ignoreUrls).anyMatch(ignoreUrl -> antPathMatcher.match(ignoreUrl, path))) {
-//                            return;
-//                        }
-//                    }
+                    String[] ignoreUrls = authProperties.getIgnoreUrls();
+                    if (ArrayUtil.isNotEmpty(ignoreUrls)) {
+                        // Ant 匹配忽略的路径，不添加Authorization
+                        AntPathMatcher antPathMatcher = new AntPathMatcher();
+                        if (Stream.of(ignoreUrls).anyMatch(ignoreUrl -> antPathMatcher.match(ignoreUrl, path))) {
+                            return;
+                        }
+                    }
 
                     // 其他接口统一添加Authorization
                     pathItem.readOperations()

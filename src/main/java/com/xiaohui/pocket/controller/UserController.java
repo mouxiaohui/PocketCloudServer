@@ -6,12 +6,13 @@ import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
 import com.xiaohui.pocket.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author xiaohui
@@ -25,6 +26,13 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "登录用户")
+    @PostMapping("/login")
+    @Log(value = "登录用户", module = LogModuleEnum.USER)
+    public Result<Void> login(@RequestBody @Valid UserRegisterForm userRegisterForm) {
+        return Result.success();
+    }
+
     @Operation(summary = "注册用户")
     @PostMapping
     @Log(value = "注册用户", module = LogModuleEnum.USER)
@@ -32,15 +40,4 @@ public class UserController {
         return Result.success();
     }
 
-    @Operation(summary = "发送邮箱验证码")
-    @PostMapping("email/code")
-    public Result<Void> sendEmailCode(
-            @Parameter(description = "邮箱地址", required = true)
-            @Email(message = "邮箱格式错误")
-            @RequestParam
-            String email
-    ) {
-        boolean result = userService.sendEmailCode(email);
-        return Result.judge(result);
-    }
 }

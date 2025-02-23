@@ -7,6 +7,11 @@ package com.xiaohui.pocket.common.constants;
 public interface RedisConstants {
 
     /**
+     * 图片验证码key前缀
+     */
+    String CAPTCHA_CODE_PREFIX = "code:captcha:";
+
+    /**
      * 邮箱验证码key前缀
      */
     String EMAIL_CODE_PREFIX = "code:email:";

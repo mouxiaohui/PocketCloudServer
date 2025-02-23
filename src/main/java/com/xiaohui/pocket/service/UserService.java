@@ -20,11 +20,4 @@ public interface UserService extends IService<User> {
      */
     Long register(UserRegisterForm userRegisterForm);
 
-    /**
-     * 发送邮箱验证码
-     *
-     * @param email 邮箱
-     * @return 是否发送成功
-     */
-    boolean sendEmailCode(String email);
 }

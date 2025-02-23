@@ -1,6 +1,8 @@
 package com.xiaohui.pocket.model.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 邮件信息
