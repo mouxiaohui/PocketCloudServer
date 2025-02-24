@@ -41,20 +41,21 @@ spring:
     template-loader-path: classpath:/templates/ # 指定模板加载路径
     suffix: ftl # 设置模板文件的后缀为ftl
 
-Auth:
+# 认证配置
+auth:
   # 无需认证的请求路径
   ignore-urls:
-    - /api/v1/user/login/**       # 登录接口
+    - /api/v1/user/login          # 登录接口
+    - /api/v1/user/register       # 注册接口
     - /api/v1/code/captcha        # 图片验证码获取接口
     - /api/v1/code/email          # 邮箱验证码发送接口
 
 # jwt 配置
-custom:
-  jwt:
-    token-type: Bearer # token类型
-    expire: 5184000 # 过期时间1天(单位:s)
-    secret: 88c29xi8fe19d30b12325a4fac8a3733ec # secret: 秘钥(普通字符串) 不能太短，太短可能会导致报错
-    issuer: xiaohui # 签发者
+jwt:
+  header: Authorization # 请求头
+  expire: 5184000 # 过期时间1天(单位:s)
+  secret: 88c29xi8fe19d30b12325a4fac8a3733ec # secret: 秘钥(普通字符串) 不能太短，太短可能会导致报错
+  issuer: xiaohui # 签发者
 
 # mybatis-plus配置
 mybatis-plus:

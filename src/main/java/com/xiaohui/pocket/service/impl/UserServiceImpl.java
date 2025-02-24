@@ -12,7 +12,6 @@ import com.xiaohui.pocket.mapper.UserMapper;
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
-import com.xiaohui.pocket.model.vo.TokenVO;
 import com.xiaohui.pocket.service.CodeService;
 import com.xiaohui.pocket.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return token字符串
      */
     @Override
-    public TokenVO login(UserLoginForm userLoginForm) {
+    public String login(UserLoginForm userLoginForm) {
         // 检查验证码是否正确 todo 开发时关闭邮箱验证码功能
         // if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
         //     throw new BusinessException(ResultCode.USER_VERIFICATION_CODE_ERROR);
@@ -81,12 +80,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 生成token
-        String token = jwtUtils.generateToken(user.getUsername(), JwtClaimConstants.USER_ID, user.getId());
-
-        return TokenVO.builder()
-                .tokenType(jwtProperties.getTokenType())
-                .accessToken(token)
-                .build();
+        return jwtUtils.generateToken(user.getUsername(), JwtClaimConstants.USER_ID, user.getId());
     }
 
 }

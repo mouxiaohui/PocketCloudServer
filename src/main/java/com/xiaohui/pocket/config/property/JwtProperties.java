@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "custom.jwt")
+@ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
 
     /**
@@ -25,9 +25,9 @@ public class JwtProperties {
     private Long expire;
 
     /**
-     * token类型
+     * 请求头
      */
-    private String tokenType;
+    private String header;
 
     /**
      * 签发者

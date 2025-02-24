@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
-import com.xiaohui.pocket.model.vo.TokenVO;
 
 /**
  * 用户服务接口
@@ -28,5 +27,5 @@ public interface UserService extends IService<User> {
      * @param userLoginForm 登录用户表单
      * @return token字符串
      */
-    TokenVO login(UserLoginForm userLoginForm);
+    String login(UserLoginForm userLoginForm);
 }

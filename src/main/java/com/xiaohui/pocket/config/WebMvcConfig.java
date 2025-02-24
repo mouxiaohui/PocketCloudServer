@@ -3,9 +3,12 @@ package com.xiaohui.pocket.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.xiaohui.pocket.config.property.AuthProperties;
+import com.xiaohui.pocket.core.interceptor.JwtTokenInterceptor;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -14,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +32,24 @@ import java.util.TimeZone;
  */
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final JwtTokenInterceptor jwtTokenInterceptor;
+
+    private final AuthProperties authProperties;
+
+    /**
+     * 注册自定义拦截器
+     *
+     * @param registry 拦截器注册器
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jwtTokenInterceptor)
+                .addPathPatterns("/api/v1/**")
+                .excludePathPatterns(authProperties.getIgnoreUrls());
+    }
 
     /**
      * 配置消息转换器
