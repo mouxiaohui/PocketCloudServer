@@ -235,7 +235,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public <T> Result<T> handleBizException(BusinessException e) {
-        log.error("biz exception", e);
+        log.error("biz exception: {}", e.getMessage());
         if (e.getResultCode() != null) {
             return Result.failed(e.getResultCode(), e.getMessage());
         }

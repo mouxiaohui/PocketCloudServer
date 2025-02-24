@@ -55,8 +55,9 @@ public enum ResultCode implements IResultCode, Serializable {
     USER_ACCOUNT_FROZEN("A0201", "用户账户被冻结"),
     USER_ACCOUNT_ABOLISHED("A0202", "用户账户已作废"),
 
-    USER_PASSWORD_ERROR("A0210", "用户名或密码错误"),
-    USER_INPUT_PASSWORD_ERROR_LIMIT_EXCEEDED("A0211", "用户输入密码错误次数超限"),
+    ACCOUNT_PASSWORD_ERROR("A0210", "账号或密码错误"),
+    USER_PASSWORD_ERROR("A0211", "用户名或密码错误"),
+    USER_INPUT_PASSWORD_ERROR_LIMIT_EXCEEDED("A0212", "用户输入密码错误次数超限"),
 
     USER_IDENTITY_VERIFICATION_FAILED("A0220", "用户身份校验失败"),
     USER_FINGERPRINT_RECOGNITION_FAILED("A0221", "用户指纹识别失败"),

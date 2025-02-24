@@ -25,4 +25,13 @@ public interface CodeService {
      */
     CaptchaInfoVO getCaptcha();
 
+    /**
+     * 校验图片验证码
+     *
+     * @param captcha    验证码
+     * @param captchaKey 验证码key
+     * @return 是否校验成功
+     */
+    boolean checkCaptcha(String captcha, String captchaKey);
+
 }

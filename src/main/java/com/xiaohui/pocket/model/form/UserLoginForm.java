@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
+ * 登录用户表单对象
+ *
  * @author xiaohui
  * @since 2025/2/22
  */
@@ -19,5 +21,13 @@ public class UserLoginForm {
     @Schema(description = "密码")
     @NotBlank(message = "密码不能为空")
     private String password;
+
+    @Schema(description = "验证码")
+    @NotBlank(message = "验证码不能为空")
+    private String captcha;
+
+    @Schema(description = "验证码key")
+    @NotBlank(message = "验证码key不能为空")
+    private String captchaKey;
 
 }

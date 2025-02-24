@@ -5,9 +5,12 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.druid.util.StringUtils;
 import com.xiaohui.pocket.common.constants.RedisConstants;
 import com.xiaohui.pocket.common.enums.CaptchaTypeEnum;
-import com.xiaohui.pocket.common.util.RedisUtil;
+import com.xiaohui.pocket.common.exception.BusinessException;
+import com.xiaohui.pocket.common.result.ResultCode;
+import com.xiaohui.pocket.common.utils.RedisUtil;
 import com.xiaohui.pocket.config.property.CaptchaProperties;
 import com.xiaohui.pocket.model.dto.MailDto;
 import com.xiaohui.pocket.model.vo.CaptchaInfoVO;
@@ -115,6 +118,32 @@ public class CodeServiceImpl implements CodeService {
                 .build();
     }
 
+    /**
+     * 校验图片验证码
+     *
+     * @param captcha    验证码
+     * @param captchaKey 验证码key
+     * @return 是否校验成功
+     */
+    @Override
+    public boolean checkCaptcha(String captcha, String captchaKey) {
+        // 从Redis获取存储的验证码（包含可能的表达式或随机字符串）
+        String cacheCaptcha = redisUtil.getCacheObject(RedisConstants.CAPTCHA_CODE_PREFIX + captchaKey);
+        // 验证码不存在或已过期
+        if (StringUtils.isEmpty(cacheCaptcha)) {
+            throw new BusinessException(ResultCode.USER_VERIFICATION_CODE_EXPIRED);
+        }
+        // 删除验证码（防止重复使用）
+        redisUtil.deleteObject(RedisConstants.CAPTCHA_CODE_PREFIX + captchaKey);
+        return codeGenerator.verify(cacheCaptcha, captcha);
+    }
+
+    /**
+     * 获取AbstractCaptcha
+     *
+     * @param captchaType 验证码类型
+     * @return {@link AbstractCaptcha}
+     */
     private AbstractCaptcha getAbstractCaptcha(String captchaType) {
         int width = captchaProperties.getWidth();
         int height = captchaProperties.getHeight();

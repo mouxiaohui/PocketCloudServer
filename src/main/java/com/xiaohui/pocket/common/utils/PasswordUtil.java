@@ -1,4 +1,4 @@
-package com.xiaohui.pocket.common.util;
+package com.xiaohui.pocket.common.utils;
 
 import cn.hutool.crypto.digest.DigestUtil;
 

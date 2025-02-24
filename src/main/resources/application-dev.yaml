@@ -48,6 +48,14 @@ Auth:
     - /api/v1/code/captcha        # 图片验证码获取接口
     - /api/v1/code/email          # 邮箱验证码发送接口
 
+# jwt 配置
+custom:
+  jwt:
+    token-type: Bearer # token类型
+    expire: 5184000 # 过期时间1天(单位:s)
+    secret: 88c29xi8fe19d30b12325a4fac8a3733ec # secret: 秘钥(普通字符串) 不能太短，太短可能会导致报错
+    issuer: xiaohui # 签发者
+
 # mybatis-plus配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -100,7 +108,7 @@ captcha:
   # 验证码高度
   height: 40
   # 验证码干扰元素个数
-  interfere-count: 2
+  interfere-count: 4
   # 文本透明度(0.0-1.0)
   text-alpha: 0.8
   # 验证码字符配置
@@ -108,7 +116,7 @@ captcha:
     # 验证码字符类型 math-算术|random-随机字符
     type: math
     # 验证码字符长度，type=算术时，表示运算位数(1:个位数运算 2:十位数运算)；type=随机字符时，表示字符个数
-    length: 1
+    length: 2
   # 验证码字体
   font:
     # 字体名称 Dialog|DialogInput|Monospaced|Serif|SansSerif

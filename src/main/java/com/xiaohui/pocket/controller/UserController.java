@@ -3,7 +3,9 @@ package com.xiaohui.pocket.controller;
 import com.xiaohui.pocket.common.annotation.Log;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
+import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
+import com.xiaohui.pocket.model.vo.TokenVO;
 import com.xiaohui.pocket.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,8 +31,9 @@ public class UserController {
     @Operation(summary = "登录用户")
     @PostMapping("/login")
     @Log(value = "登录用户", module = LogModuleEnum.USER)
-    public Result<Void> login(@RequestBody @Valid UserRegisterForm userRegisterForm) {
-        return Result.success();
+    public Result<TokenVO> login(@RequestBody @Valid UserLoginForm userLoginForm) {
+        TokenVO token = userService.login(userLoginForm);
+        return Result.success(token);
     }
 
     @Operation(summary = "注册用户")

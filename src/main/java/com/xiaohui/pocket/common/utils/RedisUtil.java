@@ -1,15 +1,14 @@
-package com.xiaohui.pocket.common.util;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+package com.xiaohui.pocket.common.utils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Redis 配置

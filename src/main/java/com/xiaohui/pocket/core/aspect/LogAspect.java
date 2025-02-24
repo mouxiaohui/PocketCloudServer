@@ -7,7 +7,7 @@ import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONUtil;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
-import com.xiaohui.pocket.common.util.IPUtils;
+import com.xiaohui.pocket.common.utils.IPUtils;
 import com.xiaohui.pocket.model.entity.Log;
 import com.xiaohui.pocket.service.LogService;
 import jakarta.servlet.http.HttpServletRequest;
