@@ -153,8 +153,7 @@ public class LogAspect {
     private void setRequestParameters(JoinPoint joinPoint, Log log) {
         String requestMethod = request.getMethod();
         log.setRequestMethod(requestMethod);
-        if (HttpMethod.GET.name().equalsIgnoreCase(requestMethod)
-                || HttpMethod.PUT.name().equalsIgnoreCase(requestMethod)
+        if (HttpMethod.PUT.name().equalsIgnoreCase(requestMethod)
                 || HttpMethod.POST.name().equalsIgnoreCase(requestMethod)) {
             String params = convertArgumentsToString(joinPoint.getArgs());
             log.setRequestParams(StrUtil.sub(params, 0, 65535));
