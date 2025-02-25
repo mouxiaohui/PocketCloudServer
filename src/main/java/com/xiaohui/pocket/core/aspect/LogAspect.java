@@ -8,6 +8,7 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONUtil;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.utils.IPUtils;
+import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.model.entity.Log;
 import com.xiaohui.pocket.service.LogService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -111,8 +112,12 @@ public class LogAspect {
         }
 
         log.setRequestUri(request.getRequestURI()); // 保存请求地址
-        // todo 工具类获取当前登录者的账号或ID的，或者从token中解析而来
-        // log.setCreateBy(1L); // 保存创建人
+
+        Long userId = BaseContext.getUserId();
+        if (!Objects.isNull(userId)) {
+            log.setCreateBy(userId); // 保存创建人
+        }
+
         String ipAddr = IPUtils.getIpAddr(request); // 获取ip地址
         if (StrUtil.isNotBlank(ipAddr)) {
             log.setIp(ipAddr);

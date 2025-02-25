@@ -24,6 +24,16 @@ public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
 
     /**
+     * 查询Redis中是否有对应的key
+     *
+     * @param key 缓存的键值
+     * @return 是否有对应的key
+     */
+    public boolean hasKey(final String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    /**
      * 缓存基本的对象，Integer、String、实体类等
      *
      * @param key   缓存的键值
@@ -65,7 +75,7 @@ public class RedisUtil {
      * @return true=设置成功；false=设置失败
      */
     public boolean expire(final String key, final long timeout, final TimeUnit unit) {
-        return redisTemplate.expire(key, timeout, unit);
+        return Boolean.TRUE.equals(redisTemplate.expire(key, timeout, unit));
     }
 
     /**
@@ -86,7 +96,7 @@ public class RedisUtil {
      * @return 是否删除成功
      */
     public boolean deleteObject(final String key) {
-        return redisTemplate.delete(key);
+        return Boolean.TRUE.equals(redisTemplate.delete(key));
     }
 
     /**

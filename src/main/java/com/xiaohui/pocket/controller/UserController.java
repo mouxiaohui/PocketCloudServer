@@ -32,6 +32,14 @@ public class UserController {
         return Result.success(token);
     }
 
+    @Operation(summary = "登出用户")
+    @DeleteMapping("/logout")
+    @Log(value = "登出用户", module = LogModuleEnum.USER)
+    public Result<Void> logout() {
+        userService.logout();
+        return Result.success();
+    }
+
     @Operation(summary = "注册用户")
     @PostMapping("/register")
     @Log(value = "注册用户", module = LogModuleEnum.USER)

@@ -28,4 +28,9 @@ public interface UserService extends IService<User> {
      * @return token字符串
      */
     String login(UserLoginForm userLoginForm);
+
+    /**
+     * 用户登出业务
+     */
+    void logout();
 }

@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.constants.JwtClaimConstants;
@@ -81,6 +82,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 生成token
         return jwtUtils.generateToken(user.getUsername(), JwtClaimConstants.USER_ID, user.getId());
+    }
+
+    /**
+     * 用户登出业务
+     */
+    @Override
+    public void logout() {
+        String token = jwtUtils.getTokenFromRequest();
+        if (StrUtil.isBlank(token)) return;
+
+        jwtUtils.blacklistToken(token);
     }
 
 }

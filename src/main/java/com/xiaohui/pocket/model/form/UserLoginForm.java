@@ -14,11 +14,11 @@ import lombok.Data;
 @Data
 public class UserLoginForm {
 
-    @Schema(description = "账号(用户名或邮箱)")
+    @Schema(description = "账号(用户名或邮箱)", example = "admin")
     @NotBlank(message = "账号不能为空")
     private String account;
 
-    @Schema(description = "密码")
+    @Schema(description = "密码", example = "xiaohui123")
     @NotBlank(message = "密码不能为空")
     private String password;
 

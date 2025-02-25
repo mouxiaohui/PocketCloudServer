@@ -10,6 +10,12 @@ package com.xiaohui.pocket.common.constants;
  */
 public interface JwtClaimConstants {
 
+
+    /**
+     * jwt唯一标识
+     */
+    String JWT_ID = "jwtId";
+
     /**
      * 用户ID
      */

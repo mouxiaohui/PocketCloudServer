@@ -53,7 +53,7 @@ auth:
 # jwt 配置
 jwt:
   header: Authorization # 请求头
-  expire: 5184000 # 过期时间1天(单位:s)
+  expire: 259200 # 过期时间3天(单位:s)
   secret: 88c29xi8fe19d30b12325a4fac8a3733ec # secret: 秘钥(普通字符串) 不能太短，太短可能会导致报错
   issuer: xiaohui # 签发者
 

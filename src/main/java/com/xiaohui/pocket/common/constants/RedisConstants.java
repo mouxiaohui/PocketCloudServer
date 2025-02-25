@@ -7,6 +7,11 @@ package com.xiaohui.pocket.common.constants;
 public interface RedisConstants {
 
     /**
+     * 黑名单Token缓存前缀
+     */
+    String BLACKLIST_TOKEN_PREFIX = "token:blacklist:";
+
+    /**
      * 图片验证码key前缀
      */
     String CAPTCHA_CODE_PREFIX = "code:captcha:";
