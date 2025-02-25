@@ -49,6 +49,7 @@ public enum ResultCode implements IResultCode, Serializable {
     PHONE_FORMAT_VERIFICATION_FAILED("A0151", "手机格式校验失败"),
     ADDRESS_FORMAT_VERIFICATION_FAILED("A0152", "地址格式校验失败"),
     EMAIL_FORMAT_VERIFICATION_FAILED("A0153", "邮箱格式校验失败"),
+    EMAIL_ALREADY_EXISTS("A0154", "邮箱已存在"),
 
     /** 二级宏观错误码  */
     USER_LOGIN_EXCEPTION("A0200", "用户登录异常"),

@@ -36,6 +36,8 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
     # 邮件发送者
     from: PocketCloud <1580374360@qq.com>
+    # 邮箱验证码过期时间
+    expire-seconds: 300 # 5分钟
   # 配置Freemarker模板引擎
   freemarker:
     template-loader-path: classpath:/templates/ # 指定模板加载路径
@@ -79,7 +81,7 @@ springdoc:
   # API文档相关配置
   api-docs:
     # 自定义API文档的路径
-    path: /v3/api-docs
+    path: /api-docs
   # API分组配置
   group-configs:
     - group: 'PocketCloud'

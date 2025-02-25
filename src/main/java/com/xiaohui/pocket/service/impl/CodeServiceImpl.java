@@ -12,6 +12,7 @@ import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.RedisUtil;
 import com.xiaohui.pocket.config.property.CaptchaProperties;
+import com.xiaohui.pocket.config.property.MailProperties;
 import com.xiaohui.pocket.model.dto.MailDto;
 import com.xiaohui.pocket.model.vo.CaptchaInfoVO;
 import com.xiaohui.pocket.service.CodeService;
@@ -49,6 +50,8 @@ public class CodeServiceImpl implements CodeService {
     private final CaptchaProperties captchaProperties;
     private final CodeGenerator codeGenerator;
 
+    private final MailProperties mailProperties;
+
     /**
      * 发送邮箱验证码
      *
@@ -82,7 +85,7 @@ public class CodeServiceImpl implements CodeService {
             boolean result = mailService.sendMail(mailDto);
             if (result) {
                 // 缓存验证码，5分钟有效
-                redisUtil.setCacheObject(redisCacheKey, code, 5, TimeUnit.MINUTES);
+                redisUtil.setCacheObject(redisCacheKey, code, mailProperties.getExpireSeconds(), TimeUnit.SECONDS);
             }
             return result;
         } catch (Exception e) {
@@ -90,6 +93,23 @@ public class CodeServiceImpl implements CodeService {
             return false;
         }
     }
+
+    /**
+     * 校验邮箱验证码
+     *
+     * @param email 邮箱
+     * @param code  验证码
+     * @return 是否校验成功
+     */
+    @Override
+    public boolean checkEmailCode(String email, String code) {
+        String redisCacheKey = RedisConstants.EMAIL_CODE_PREFIX + email;
+        String cacheCode = redisUtil.getCacheObject(redisCacheKey);
+        // 删除验证码（防止重复使用）
+        redisUtil.deleteObject(redisCacheKey);
+        return !cacheCode.isBlank() && cacheCode.equals(code);
+    }
+
 
     /**
      * 获取图片验证码

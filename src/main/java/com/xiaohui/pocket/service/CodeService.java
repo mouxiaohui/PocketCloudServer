@@ -19,6 +19,15 @@ public interface CodeService {
     boolean sendEmailCode(String email);
 
     /**
+     * 校验邮箱验证码
+     *
+     * @param email 邮箱
+     * @param code  验证码
+     * @return 是否校验成功
+     */
+    boolean checkEmailCode(String email, String code);
+
+    /**
      * 获取图片验证码
      *
      * @return 验证码

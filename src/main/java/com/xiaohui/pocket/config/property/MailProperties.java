@@ -53,6 +53,11 @@ public class MailProperties {
     private String from;
 
     /**
+     * 验证码过期时间，单位：秒
+     */
+    private Integer expireSeconds;
+
+    /**
      * 邮件服务器的其他属性配置。
      * 这些配置通常用于进一步定制邮件发送行为。
      */

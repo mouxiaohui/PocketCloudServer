@@ -1,14 +1,14 @@
 package com.xiaohui.pocket.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.constants.JwtClaimConstants;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.JwtUtils;
 import com.xiaohui.pocket.common.utils.PasswordUtil;
-import com.xiaohui.pocket.config.property.JwtProperties;
+import com.xiaohui.pocket.converter.UserConverter;
 import com.xiaohui.pocket.mapper.UserMapper;
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserLoginForm;
@@ -32,21 +32,43 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    private final CodeService codeService;
-
     private final JwtUtils jwtUtils;
 
-    private final JwtProperties jwtProperties;
+    private final UserConverter userConverter;
+
+    private final CodeService codeService;
 
     /**
      * 用户注册业务
      *
      * @param userRegisterForm 注册用户表单
-     * @return 用户ID
+     * @return 是否注册成功
      */
     @Override
-    public Long register(UserRegisterForm userRegisterForm) {
-        return null;
+    public boolean register(UserRegisterForm userRegisterForm) {
+        // 检查邮箱验证码是否正确 todo 开发时关闭邮箱验证码功能
+        // if (!codeService.checkEmailCode(userRegisterForm.getEmail(), userRegisterForm.getEmailCode())) {
+        //     throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_INPUT_ERROR);
+        // }
+
+        // 构造查询条件，同时检查用户名和邮箱
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, userRegisterForm.getUsername()).or().eq(User::getEmail, userRegisterForm.getEmail());
+
+        // 查询用户
+        User user = getOne(wrapper);
+
+        if (!Objects.isNull(user)) {
+            if (user.getUsername().equals(userRegisterForm.getUsername())) {
+                throw new BusinessException(ResultCode.USERNAME_ALREADY_EXISTS);
+            } else if (user.getEmail().equals(userRegisterForm.getEmail())) {
+                throw new BusinessException(ResultCode.EMAIL_ALREADY_EXISTS);
+            }
+
+            throw new BusinessException(ResultCode.USER_REGISTRATION_ERROR);
+        }
+
+        return save(userConverter.toEntity(userRegisterForm));
     }
 
     /**
@@ -57,18 +79,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public String login(UserLoginForm userLoginForm) {
-        // 检查验证码是否正确 todo 开发时关闭邮箱验证码功能
+        // 检查验证码是否正确 todo 开发时关闭图片验证码功能
         // if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
-        //     throw new BusinessException(ResultCode.USER_VERIFICATION_CODE_ERROR);
+        //     throw new BusinessException(ResultCode.VERIFICATION_CODE_INPUT_ERROR);
         // }
 
         User user;
         if (userLoginForm.getAccount().contains("@")) {
             // 按email查询用户
-            user = getOne(new QueryWrapper<User>().eq("email", userLoginForm.getAccount()));
+            user = getUserByEmail(userLoginForm.getAccount());
         } else {
             // 按username查询用户
-            user = getOne(new QueryWrapper<User>().eq("username", userLoginForm.getAccount()));
+            user = getUserByUsername(userLoginForm.getAccount());
         }
 
         if (Objects.isNull(user)) {
@@ -93,6 +115,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (StrUtil.isBlank(token)) return;
 
         jwtUtils.blacklistToken(token);
+    }
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param username 用户名
+     * @return 用户实体
+     */
+    private User getUserByUsername(String username) {
+        return getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+    }
+
+    /**
+     * 根据邮箱查询用户
+     *
+     * @param email 邮箱
+     * @return 用户实体
+     */
+    private User getUserByEmail(String email) {
+        return getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
     }
 
 }

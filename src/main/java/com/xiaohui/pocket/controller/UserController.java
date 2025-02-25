@@ -3,6 +3,7 @@ package com.xiaohui.pocket.controller;
 import com.xiaohui.pocket.common.annotation.Log;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
+import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
 import com.xiaohui.pocket.service.UserService;
@@ -44,6 +45,9 @@ public class UserController {
     @PostMapping("/register")
     @Log(value = "注册用户", module = LogModuleEnum.USER)
     public Result<Void> register(@RequestBody @Valid UserRegisterForm userRegisterForm) {
+        if (!userService.register(userRegisterForm)) {
+            return Result.failed(ResultCode.USER_REGISTRATION_ERROR);
+        }
         return Result.success();
     }
 

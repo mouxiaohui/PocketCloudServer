@@ -17,9 +17,9 @@ public interface UserService extends IService<User> {
      * 用户注册业务
      *
      * @param userRegisterForm 注册用户表单
-     * @return 用户ID
+     * @return 是否注册成功
      */
-    Long register(UserRegisterForm userRegisterForm);
+    boolean register(UserRegisterForm userRegisterForm);
 
     /**
      * 用户登录业务
