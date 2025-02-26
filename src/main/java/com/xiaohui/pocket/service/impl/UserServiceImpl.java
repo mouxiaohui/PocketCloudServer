@@ -68,7 +68,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ResultCode.USER_REGISTRATION_ERROR);
         }
 
-        return save(userConverter.toEntity(userRegisterForm));
+        User saveUser = userConverter.toEntity(userRegisterForm);
+        // 设置盐和加密后密码
+        String salt = PasswordUtil.getSalt();
+        saveUser.setSalt(salt);
+        saveUser.setPassword(PasswordUtil.encodePassword(saveUser.getPassword(), salt));
+
+        return save(saveUser);
     }
 
     /**

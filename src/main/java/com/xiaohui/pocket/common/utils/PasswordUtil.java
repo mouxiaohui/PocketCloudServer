@@ -11,6 +11,15 @@ import cn.hutool.crypto.digest.DigestUtil;
 public class PasswordUtil {
 
     /**
+     * 随机生成 salt
+     *
+     * @return salt
+     */
+    public static String getSalt() {
+        return DigestUtil.md5Hex(System.currentTimeMillis() + "");
+    }
+
+    /**
      * 加密密码
      * @param rawPassword 原始密码
      * @param salt 盐值
