@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
+import com.xiaohui.pocket.model.vo.UserInfoVO;
 
 /**
  * 用户服务接口
@@ -33,4 +34,11 @@ public interface UserService extends IService<User> {
      * 用户登出业务
      */
     void logout();
+
+    /**
+     * 获取用户信息业务
+     *
+     * @return 用户信息
+     */
+    UserInfoVO info();
 }

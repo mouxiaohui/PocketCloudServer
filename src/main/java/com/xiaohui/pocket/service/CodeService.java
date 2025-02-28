@@ -28,6 +28,13 @@ public interface CodeService {
     boolean checkEmailCode(String email, String code);
 
     /**
+     * 从Redis中删除邮箱验证码
+     *
+     * @param email 邮箱
+     */
+    void deleteEmailCode(String email);
+
+    /**
      * 获取图片验证码
      *
      * @return 验证码

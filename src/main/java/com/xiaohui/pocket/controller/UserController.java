@@ -6,6 +6,7 @@ import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
+import com.xiaohui.pocket.model.vo.UserInfoVO;
 import com.xiaohui.pocket.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,10 +53,11 @@ public class UserController {
     }
 
     @Operation(summary = "获取用户信息")
-    @GetMapping("/{id}")
+    @GetMapping
     @Log(value = "获取用户信息", module = LogModuleEnum.USER)
-    public Result<Void> getUserInfo(@PathVariable Long id) {
-        return Result.success();
+    public Result<UserInfoVO> info() {
+        UserInfoVO userInfo = userService.info();
+        return Result.success(userInfo);
     }
 
 }

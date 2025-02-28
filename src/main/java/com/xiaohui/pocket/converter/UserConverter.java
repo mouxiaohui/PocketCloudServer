@@ -2,6 +2,7 @@ package com.xiaohui.pocket.converter;
 
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
+import com.xiaohui.pocket.model.vo.UserInfoVO;
 import org.mapstruct.Mapper;
 
 /**
@@ -12,5 +13,7 @@ import org.mapstruct.Mapper;
 public interface UserConverter {
 
     User toEntity(UserRegisterForm userRegisterForm);
+
+    UserInfoVO toVO(User user);
 
 }

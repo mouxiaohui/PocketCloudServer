@@ -8,12 +8,17 @@ import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.JwtUtils;
 import com.xiaohui.pocket.common.utils.PasswordUtil;
+import com.xiaohui.pocket.constants.FileConstants;
 import com.xiaohui.pocket.converter.UserConverter;
+import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.mapper.UserMapper;
+import com.xiaohui.pocket.model.dto.FolderDto;
 import com.xiaohui.pocket.model.entity.User;
 import com.xiaohui.pocket.model.form.UserLoginForm;
 import com.xiaohui.pocket.model.form.UserRegisterForm;
+import com.xiaohui.pocket.model.vo.UserInfoVO;
 import com.xiaohui.pocket.service.CodeService;
+import com.xiaohui.pocket.service.UserFileService;
 import com.xiaohui.pocket.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final CodeService codeService;
 
+    private final UserFileService userFileService;
+
     /**
      * 用户注册业务
      *
@@ -46,10 +53,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public boolean register(UserRegisterForm userRegisterForm) {
-        // 检查邮箱验证码是否正确 todo 开发时关闭邮箱验证码功能
-        // if (!codeService.checkEmailCode(userRegisterForm.getEmail(), userRegisterForm.getEmailCode())) {
-        //     throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_INPUT_ERROR);
-        // }
+        // 检查邮箱验证码是否正确
+//         if (!codeService.checkEmailCode(userRegisterForm.getEmail(), userRegisterForm.getEmailCode())) {
+//             throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_ERROR);
+//         }
 
         // 构造查询条件，同时检查用户名和邮箱
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
@@ -74,7 +81,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         saveUser.setSalt(salt);
         saveUser.setPassword(PasswordUtil.encodePassword(saveUser.getPassword(), salt));
 
-        return save(saveUser);
+        boolean result = save(saveUser);
+        if (result) {
+            // 删除邮箱验证码
+            codeService.deleteEmailCode(saveUser.getEmail());
+            // 创建用户根目录
+            FolderDto folderDto = FolderDto.builder()
+                    .userId(saveUser.getId())
+                    .folderName(FileConstants.ROOT_FOLDER_NAME)
+                    .parentId(FileConstants.TOP_PARENT_ID)
+                    .build();
+            userFileService.createFolder(folderDto);
+        }
+
+
+        return result;
     }
 
     /**
@@ -85,10 +106,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public String login(UserLoginForm userLoginForm) {
-        // 检查验证码是否正确 todo 开发时关闭图片验证码功能
-        // if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
-        //     throw new BusinessException(ResultCode.VERIFICATION_CODE_INPUT_ERROR);
-        // }
+        // 检查验证码是否正确
+//         if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
+//             throw new BusinessException(ResultCode.CAPTCHA_VERIFICATION_CODE_ERROR);
+//         }
 
         User user;
         if (userLoginForm.getAccount().contains("@")) {
@@ -121,6 +142,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (StrUtil.isBlank(token)) return;
 
         jwtUtils.blacklistToken(token);
+    }
+
+    /**
+     * 获取用户信息业务
+     *
+     * @return 用户信息
+     */
+    @Override
+    public UserInfoVO info() {
+        Long userId = BaseContext.getUserId();
+        User user = getById(userId);
+        if (Objects.isNull(user)) {
+            throw new BusinessException(ResultCode.USER_NOT_EXISTS);
+        }
+
+        return userConverter.toVO(user);
     }
 
     /**

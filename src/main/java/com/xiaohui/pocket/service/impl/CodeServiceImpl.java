@@ -26,6 +26,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -104,10 +105,21 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public boolean checkEmailCode(String email, String code) {
         String redisCacheKey = RedisConstants.EMAIL_CODE_PREFIX + email;
-        String cacheCode = redisUtil.getCacheObject(redisCacheKey);
+        Object cacheCode = redisUtil.getCacheObject(redisCacheKey);
+        if (Objects.isNull(cacheCode)) {
+            throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_EXPIRED);
+        }
+        return cacheCode.toString().equals(code);
+    }
+
+    /**
+     * 从Redis中删除邮箱验证码
+     *
+     * @param email 邮箱
+     */
+    public void deleteEmailCode(String email) {
         // 删除验证码（防止重复使用）
-        redisUtil.deleteObject(redisCacheKey);
-        return !cacheCode.isBlank() && cacheCode.equals(code);
+        redisUtil.deleteObject(RedisConstants.EMAIL_CODE_PREFIX + email);
     }
 
 
@@ -151,7 +163,7 @@ public class CodeServiceImpl implements CodeService {
         String cacheCaptcha = redisUtil.getCacheObject(RedisConstants.CAPTCHA_CODE_PREFIX + captchaKey);
         // 验证码不存在或已过期
         if (StringUtils.isEmpty(cacheCaptcha)) {
-            throw new BusinessException(ResultCode.USER_VERIFICATION_CODE_EXPIRED);
+            throw new BusinessException(ResultCode.CAPTCHA_VERIFICATION_CODE_EXPIRED);
         }
         // 删除验证码（防止重复使用）
         redisUtil.deleteObject(RedisConstants.CAPTCHA_CODE_PREFIX + captchaKey);

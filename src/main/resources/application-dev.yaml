@@ -117,9 +117,9 @@ captcha:
   # 验证码字符配置
   code:
     # 验证码字符类型 math-算术|random-随机字符
-    type: math
+    type: random
     # 验证码字符长度，type=算术时，表示运算位数(1:个位数运算 2:十位数运算)；type=随机字符时，表示字符个数
-    length: 2
+    length: 4
   # 验证码字体
   font:
     # 字体名称 Dialog|DialogInput|Monospaced|Serif|SansSerif
