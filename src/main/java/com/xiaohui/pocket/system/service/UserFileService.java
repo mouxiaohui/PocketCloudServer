@@ -2,7 +2,6 @@ package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
-import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 
@@ -39,11 +38,11 @@ public interface UserFileService extends IService<UserFile> {
      */
     List<UserFile> getFileList(QueryFileListDto queryFileListDto);
 
-    /**
-     * 单文件上传
-     *
-     * @param fileUploadDto 文件上传参数
-     */
-    void upload(FileUploadDto fileUploadDto);
+//    /**
+//     * 单文件上传
+//     *
+//     * @param realFileUploadForm 文件上传参数
+//     */
+//    void upload(RealFileUploadForm realFileUploadForm);
 
 }

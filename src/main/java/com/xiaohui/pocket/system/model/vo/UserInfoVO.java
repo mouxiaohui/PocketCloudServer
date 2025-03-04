@@ -13,9 +13,6 @@ import lombok.Data;
 @Builder
 public class UserInfoVO {
 
-    @Schema(description = "用户ID")
-    private Long id;
-
     @Schema(description = "用户名")
     private String username;
 

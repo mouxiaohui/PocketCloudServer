@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Builder
 @Getter
-public class FileUploadDto {
+public class RealFileUploadDto {
 
     /**
      * 文件名称

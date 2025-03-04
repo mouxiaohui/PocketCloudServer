@@ -9,7 +9,6 @@ import com.xiaohui.pocket.system.converter.UserFileConverter;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
-import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -74,14 +73,14 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         return null;
     }
 
-    /**
-     * 单文件上传
-     *
-     * @param fileUploadDto 文件上传参数
-     */
-    @Override
-    public void upload(FileUploadDto fileUploadDto) {
-
-    }
+//    /**
+//     * 单文件上传
+//     *
+//     * @param realFileUploadForm 文件上传参数
+//     */
+//    @Override
+//    public void upload(RealFileUploadForm realFileUploadForm) {
+//        RealFileUploadDto realFileUploadDto = realFileConverter.toUploadDto(realFileUploadForm);
+//    }
 
 }

@@ -16,6 +16,7 @@ public enum LogModuleEnum {
 
     EXCEPTION("异常"),
     USER("用户"),
+    File("文件"),
     OTHER("其他");
 
     @JsonValue

@@ -130,3 +130,5 @@ captcha:
     size: 24
   # 验证码有效期(秒)
   expire-seconds: 120
+
+#存储设置
