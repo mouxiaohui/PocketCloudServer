@@ -4,6 +4,9 @@ import com.xiaohui.pocket.common.annotation.Log;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.common.result.ResultCode;
+import com.xiaohui.pocket.system.converter.UserConverter;
+import com.xiaohui.pocket.system.model.dto.UserLoginDto;
+import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
 import com.xiaohui.pocket.system.model.form.UserLoginForm;
 import com.xiaohui.pocket.system.model.form.UserRegisterForm;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
@@ -26,11 +29,14 @@ public class UserController {
 
     private final UserService userService;
 
+    private final UserConverter userConverter;
+
     @Operation(summary = "登录用户")
     @PostMapping("/login")
     @Log(value = "登录用户", module = LogModuleEnum.USER)
     public Result<String> login(@RequestBody @Valid UserLoginForm userLoginForm) {
-        String token = userService.login(userLoginForm);
+        UserLoginDto loginDto = userConverter.toLoginDto(userLoginForm);
+        String token = userService.login(loginDto);
         return Result.success(token);
     }
 
@@ -46,7 +52,8 @@ public class UserController {
     @PostMapping("/register")
     @Log(value = "注册用户", module = LogModuleEnum.USER)
     public Result<Void> register(@RequestBody @Valid UserRegisterForm userRegisterForm) {
-        if (!userService.register(userRegisterForm)) {
+        UserRegisterDto registerDto = userConverter.toRegisterDto(userRegisterForm);
+        if (!userService.register(registerDto)) {
             return Result.failed(ResultCode.USER_REGISTRATION_ERROR);
         }
         return Result.success();

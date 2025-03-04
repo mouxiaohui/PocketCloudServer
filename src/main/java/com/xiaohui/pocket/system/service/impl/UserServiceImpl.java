@@ -13,9 +13,9 @@ import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.UserConverter;
 import com.xiaohui.pocket.system.mapper.UserMapper;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
+import com.xiaohui.pocket.system.model.dto.UserLoginDto;
+import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
 import com.xiaohui.pocket.system.model.entity.User;
-import com.xiaohui.pocket.system.model.form.UserLoginForm;
-import com.xiaohui.pocket.system.model.form.UserRegisterForm;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
 import com.xiaohui.pocket.system.service.CodeService;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -48,11 +48,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户注册业务
      *
-     * @param userRegisterForm 注册用户表单
+     * @param userRegisterDto 注册用户表单
      * @return 是否注册成功
      */
     @Override
-    public boolean register(UserRegisterForm userRegisterForm) {
+    public boolean register(UserRegisterDto userRegisterDto) {
         // 检查邮箱验证码是否正确
 //         if (!codeService.checkEmailCode(userRegisterForm.getEmail(), userRegisterForm.getEmailCode())) {
 //             throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_ERROR);
@@ -60,22 +60,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 构造查询条件，同时检查用户名和邮箱
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getUsername, userRegisterForm.getUsername()).or().eq(User::getEmail, userRegisterForm.getEmail());
+        wrapper.eq(User::getUsername, userRegisterDto.getUsername()).or().eq(User::getEmail, userRegisterDto.getEmail());
 
         // 查询用户
         User user = getOne(wrapper);
 
         if (!Objects.isNull(user)) {
-            if (user.getUsername().equals(userRegisterForm.getUsername())) {
+            if (user.getUsername().equals(userRegisterDto.getUsername())) {
                 throw new BusinessException(ResultCode.USERNAME_ALREADY_EXISTS);
-            } else if (user.getEmail().equals(userRegisterForm.getEmail())) {
+            } else if (user.getEmail().equals(userRegisterDto.getEmail())) {
                 throw new BusinessException(ResultCode.EMAIL_ALREADY_EXISTS);
             }
 
             throw new BusinessException(ResultCode.USER_REGISTRATION_ERROR);
         }
 
-        User saveUser = userConverter.toEntity(userRegisterForm);
+        User saveUser = userConverter.toEntity(userRegisterDto);
         // 设置盐和加密后密码
         String salt = PasswordUtil.getSalt();
         saveUser.setSalt(salt);
@@ -101,23 +101,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户登录业务
      *
-     * @param userLoginForm 登录用户表单
+     * @param userLoginDto 登录用户表单
      * @return token字符串
      */
     @Override
-    public String login(UserLoginForm userLoginForm) {
+    public String login(UserLoginDto userLoginDto) {
         // 检查验证码是否正确
 //         if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
 //             throw new BusinessException(ResultCode.CAPTCHA_VERIFICATION_CODE_ERROR);
 //         }
 
         User user;
-        if (userLoginForm.getAccount().contains("@")) {
+        if (userLoginDto.getAccount().contains("@")) {
             // 按email查询用户
-            user = getUserByEmail(userLoginForm.getAccount());
+            user = getUserByEmail(userLoginDto.getAccount());
         } else {
             // 按username查询用户
-            user = getUserByUsername(userLoginForm.getAccount());
+            user = getUserByUsername(userLoginDto.getAccount());
         }
 
         if (Objects.isNull(user)) {
@@ -125,7 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 校验密码
-        if (!PasswordUtil.matchesPassword(userLoginForm.getPassword(), user.getPassword(), user.getSalt())) {
+        if (!PasswordUtil.matchesPassword(userLoginDto.getPassword(), user.getPassword(), user.getSalt())) {
             throw new BusinessException(ResultCode.ACCOUNT_PASSWORD_ERROR);
         }
 
@@ -157,7 +157,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ResultCode.USER_NOT_EXISTS);
         }
 
-        return userConverter.toVO(user);
+        return userConverter.toInfoVO(user);
     }
 
     /**

@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
  * @since 2025/2/28
  */
 @Mapper(componentModel = "spring")
-public interface UserFileConverter {
+public interface FileConverter {
 
     @Mapping(target = "filename", source = "folderName")
     UserFile toEntity(CreateFolderDto createFolderDto);

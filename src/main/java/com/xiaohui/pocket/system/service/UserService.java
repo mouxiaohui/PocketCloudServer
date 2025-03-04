@@ -1,9 +1,9 @@
 package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaohui.pocket.system.model.dto.UserLoginDto;
+import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
 import com.xiaohui.pocket.system.model.entity.User;
-import com.xiaohui.pocket.system.model.form.UserLoginForm;
-import com.xiaohui.pocket.system.model.form.UserRegisterForm;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
 
 /**
@@ -17,18 +17,18 @@ public interface UserService extends IService<User> {
     /**
      * 用户注册业务
      *
-     * @param userRegisterForm 注册用户表单
+     * @param userRegisterDto 注册用户表单
      * @return 是否注册成功
      */
-    boolean register(UserRegisterForm userRegisterForm);
+    boolean register(UserRegisterDto userRegisterDto);
 
     /**
      * 用户登录业务
      *
-     * @param userLoginForm 登录用户表单
+     * @param userLoginDto 登录用户表单
      * @return token字符串
      */
-    String login(UserLoginForm userLoginForm);
+    String login(UserLoginDto userLoginDto);
 
     /**
      * 用户登出业务

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.system.constants.FileConstants;
-import com.xiaohui.pocket.system.converter.UserFileConverter;
+import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> implements UserFileService {
 
-    private final UserFileConverter userFileConverter;
+    private final FileConverter fileConverter;
 
     /**
      * 创建用户文件夹
@@ -36,7 +36,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
      */
     @Override
     public void createFolder(CreateFolderDto createFolderDto) {
-        UserFile userFile = userFileConverter.toEntity(createFolderDto);
+        UserFile userFile = fileConverter.toEntity(createFolderDto);
         userFile.setFolderFlag(FolderFlagEnum.YES.getCode());
         userFile.setCreateUser(createFolderDto.getUserId());
         userFile.setUpdateUser(createFolderDto.getUserId());
