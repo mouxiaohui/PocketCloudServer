@@ -38,12 +38,13 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     private final RealFileService realFileService;
 
     /**
-     * 创建用户文件夹
+     * 创建文件夹
      *
      * @param createFolderDto 文件夹信息
+     * @return 文件夹ID
      */
     @Override
-    public void createFolder(CreateFolderDto createFolderDto) {
+    public Long createFolder(CreateFolderDto createFolderDto) {
         UserFile userFile = fileConverter.toUserFileEntity(createFolderDto);
         userFile.setFolderFlag(FolderFlagEnum.YES.getCode());
         userFile.setCreateUser(createFolderDto.getUserId());
@@ -52,6 +53,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         if (!save(userFile)) {
             throw new BusinessException(ResultCode.CREATE_FOLDER_FAILED);
         }
+
+        return userFile.getId();
     }
 
     /**

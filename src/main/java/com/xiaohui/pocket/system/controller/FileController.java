@@ -7,8 +7,10 @@ import com.xiaohui.pocket.common.utils.IdUtil;
 import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
+import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
 import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.form.CreateFolderForm;
 import com.xiaohui.pocket.system.model.form.FileUploadForm;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -66,6 +68,15 @@ public class FileController {
 
         List<UserFileVO> userFileVOList = userFileService.getFileList(queryFileListDto);
         return Result.success(userFileVOList);
+    }
+
+    @Operation(summary = "创建文件夹")
+    @PostMapping("/folder")
+    @Log(value = "创建文件夹", module = LogModuleEnum.File)
+    public Result<String> createFolder(@Validated @RequestBody CreateFolderForm createFolderForm) {
+        CreateFolderDto createFolderDto = fileConverter.toCreateFolderDto(createFolderForm);
+        Long folderId = userFileService.createFolder(createFolderDto);
+        return Result.success(IdUtil.encrypt(folderId));
     }
 
     @Operation(summary = "单文件上传")

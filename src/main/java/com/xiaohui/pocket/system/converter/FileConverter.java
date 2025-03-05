@@ -5,6 +5,7 @@ import com.xiaohui.pocket.system.model.dto.FileSaveDto;
 import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.model.form.CreateFolderForm;
 import com.xiaohui.pocket.system.model.form.FileUploadForm;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,6 +32,10 @@ public interface FileConverter {
     @Mapping(target = "fileSuffix", expression = "java(com.xiaohui.pocket.common.utils.FileUtils.getFileSuffix(fileSaveDto.getFilename()))")
     @Mapping(target = "createUser", expression = "java(fileSaveDto.getUserId())")
     RealFile toRealFileEntity(FileSaveDto fileSaveDto);
+
+    @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(createFolderForm.getParentId()))")
+    @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
+    CreateFolderDto toCreateFolderDto(CreateFolderForm createFolderForm);
 
     @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(fileUploadForm.getParentId()))")
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")

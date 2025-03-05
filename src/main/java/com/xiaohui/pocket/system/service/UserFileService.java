@@ -21,8 +21,9 @@ public interface UserFileService extends IService<UserFile> {
      * 创建文件夹
      *
      * @param createFolderDto 文件夹信息
+     * @return 文件夹ID
      */
-    void createFolder(CreateFolderDto createFolderDto);
+    Long createFolder(CreateFolderDto createFolderDto);
 
     /**
      * 查询用户的根文件夹信息
