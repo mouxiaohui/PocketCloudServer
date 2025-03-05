@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
 import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.UpdateFilenameDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 
@@ -24,6 +25,13 @@ public interface UserFileService extends IService<UserFile> {
      * @return 文件夹ID
      */
     Long createFolder(CreateFolderDto createFolderDto);
+
+    /**
+     * 更新文件名称
+     *
+     * @param updateFilenameDto 文件名称更新参数
+     */
+    void updateFilename(UpdateFilenameDto updateFilenameDto);
 
     /**
      * 查询用户的根文件夹信息

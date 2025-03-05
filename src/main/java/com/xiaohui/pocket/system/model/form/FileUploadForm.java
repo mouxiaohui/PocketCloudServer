@@ -7,7 +7,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 单文件上传参数实体对象
+ * 单文件上传参数对象
  *
  * @author xiaohui
  * @since 2025/3/4

@@ -56,6 +56,7 @@ public enum ResultCode implements IResultCode, Serializable {
     GET_FILE_TYPE_FAILED("B0203", "获取文件类型失败"),
     GET_USER_ROOT_FOLDER_INFO_FAILED("B0204", "获取用户根文件夹信息失败"),
     PARENT_FOLDER_ID_ERROR("B0205", "父文件夹ID错误"),
+    UPDATE_FILENAME_FAILED("B0206", "文件重命名失败"),
 
 
     /** 一级宏观错误码  */

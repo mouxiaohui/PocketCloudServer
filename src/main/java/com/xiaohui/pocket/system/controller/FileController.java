@@ -10,8 +10,10 @@ import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
 import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.UpdateFilenameDto;
 import com.xiaohui.pocket.system.model.form.CreateFolderForm;
 import com.xiaohui.pocket.system.model.form.FileUploadForm;
+import com.xiaohui.pocket.system.model.form.UpdateFilenameForm;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,6 +79,15 @@ public class FileController {
         CreateFolderDto createFolderDto = fileConverter.toCreateFolderDto(createFolderForm);
         Long folderId = userFileService.createFolder(createFolderDto);
         return Result.success(IdUtil.encrypt(folderId));
+    }
+
+    @Operation(summary = "文件重命名")
+    @PutMapping
+    @Log(value = "文件重命名", module = LogModuleEnum.File)
+    public Result<Void> updateFilename(@Validated @RequestBody UpdateFilenameForm updateFilenameForm) {
+        UpdateFilenameDto updateFilenameDto = fileConverter.toUpdateFilenameDto(updateFilenameForm);
+        userFileService.updateFilename(updateFilenameDto);
+        return Result.success();
     }
 
     @Operation(summary = "单文件上传")

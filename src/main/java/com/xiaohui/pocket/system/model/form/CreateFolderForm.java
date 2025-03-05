@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 创建文件夹参数实体对象
+ * 创建文件夹参数对象
  *
  * @author xiaohui
  * @since 2025/3/5

@@ -1,6 +1,7 @@
 package com.xiaohui.pocket.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
@@ -9,10 +10,7 @@ import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.enums.FileTypeEnum;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
-import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
-import com.xiaohui.pocket.system.model.dto.FileSaveDto;
-import com.xiaohui.pocket.system.model.dto.FileUploadDto;
-import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
@@ -55,6 +53,24 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         }
 
         return userFile.getId();
+    }
+
+    /**
+     * 更新文件名称
+     *
+     * @param updateFilenameDto 文件名称更新参数
+     */
+    @Override
+    public void updateFilename(UpdateFilenameDto updateFilenameDto) {
+        UserFile userFile = fileConverter.toUserFileEntity(updateFilenameDto);
+
+        LambdaUpdateWrapper<UserFile> updateWrapper = new LambdaUpdateWrapper<UserFile>()
+                .eq(UserFile::getId, updateFilenameDto.getFileId())
+                .eq(UserFile::getUserId, updateFilenameDto.getUserId());
+
+        if (!update(userFile, updateWrapper)) {
+            throw new BusinessException(ResultCode.UPDATE_FILENAME_FAILED);
+        }
     }
 
     /**
