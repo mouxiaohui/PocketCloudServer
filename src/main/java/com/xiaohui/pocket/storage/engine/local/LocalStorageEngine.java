@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 本地的文件存储引擎实现方案
@@ -31,11 +32,25 @@ public class LocalStorageEngine extends AbstractStorageEngine {
      */
     @Override
     public String store(StoreFileDto context) throws IOException {
-        checkStoreFileContext(context);
+        checkArguments(context);
         String realFilePath = FileUtils.generateStoreFileRealPath(properties.getRootFilePath(), context.getFilename());
         FileUtils.writeStreamToFile(context.getInputStream(), new File(realFilePath), context.getTotalSize());
 
         return realFilePath;
+    }
+
+    /**
+     * 删除物理文件
+     *
+     * @param realFilePathList 文件的物理路径列表
+     * @throws IOException 文件删除异常
+     */
+    @Override
+    public void delete(List<String> realFilePathList) throws IOException {
+        checkArguments(realFilePathList);
+        for (String realFilePath : realFilePathList) {
+            org.apache.commons.io.FileUtils.forceDelete(new File(realFilePath));
+        }
     }
 
 }

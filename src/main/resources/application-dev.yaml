@@ -132,3 +132,8 @@ captcha:
   expire-seconds: 120
 
 #存储设置
+storage:
+  engine:
+    local:
+      root-file-path: ./storage
+      root-file-chunk-path: ./storage/chunk

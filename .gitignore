@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 上传文件存储 ###
+storage/

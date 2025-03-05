@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author xiaohui
@@ -53,7 +54,8 @@ public class RealFileServiceImpl extends ServiceImpl<RealFileMapper, RealFile> i
             realFile.setRealPath(realPath);
             realFile.setFilePreviewContentType(FileUtils.getContentType(realPath));
             if (!save(realFile)) {
-                // todo 如果保存记录失败 删除物理文件
+                // 如果保存记录失败，删除物理文件
+                storageEngine.delete(List.of(realPath));
             }
 
             return realFile;

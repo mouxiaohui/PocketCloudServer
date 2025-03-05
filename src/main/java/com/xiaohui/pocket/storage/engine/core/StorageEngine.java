@@ -3,6 +3,7 @@ package com.xiaohui.pocket.storage.engine.core;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 文件存储引擎模块的顶级接口
@@ -20,5 +21,13 @@ public interface StorageEngine {
      * @throws IOException 文件存储异常
      */
     String store(StoreFileDto context) throws IOException;
+
+    /**
+     * 删除物理文件
+     *
+     * @param realFilePathList 文件的物理路径列表
+     * @throws IOException 文件删除异常
+     */
+    void delete(List<String> realFilePathList) throws IOException;
 
 }
