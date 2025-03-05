@@ -3,6 +3,7 @@ package com.xiaohui.pocket.common.utils;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import com.xiaohui.pocket.common.exception.BusinessException;
+import com.xiaohui.pocket.common.result.ResultCode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.ByteBuffer;
@@ -50,7 +51,7 @@ public class IdUtil {
         try {
             content = AES128Util.decrypt(decryptId);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ResultCode.PARENT_FOLDER_ID_ERROR);
         }
 
         if (ArrayUtil.isNotEmpty(content)) {
@@ -58,7 +59,7 @@ public class IdUtil {
             return byteBuffer.getLong();
         }
 
-        throw new BusinessException("AES128Util.aesDecode fail");
+        throw new BusinessException(ResultCode.PARENT_FOLDER_ID_ERROR);
     }
 
 }

@@ -16,4 +16,14 @@ public interface FileConstants {
      */
     String ROOT_FOLDER_NAME = "全部文件";
 
+    /**
+     * 所有文件类型的标识
+     */
+    String ALL_FILE_TYPE = "-1";
+
+    /**
+     * 文件类型字符串分隔符
+     */
+    String FILE_TYPE_SPLIT_CHAR = ",";
+
 }

@@ -15,6 +15,7 @@ import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
 import lombok.RequiredArgsConstructor;
@@ -75,9 +76,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
      * @return 文件信息列表
      */
     @Override
-    public List<UserFile> getFileList(QueryFileListDto queryFileListDto) {
-
-        return null;
+    public List<UserFileVO> getFileList(QueryFileListDto queryFileListDto) {
+        return this.baseMapper.selectFileList(queryFileListDto);
     }
 
     /**

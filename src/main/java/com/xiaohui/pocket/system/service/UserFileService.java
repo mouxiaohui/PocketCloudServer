@@ -5,6 +5,7 @@ import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
 import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.model.vo.UserFileVO;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface UserFileService extends IService<UserFile> {
      * @param queryFileListDto 查询文件信息列表参数
      * @return 文件信息列表
      */
-    List<UserFile> getFileList(QueryFileListDto queryFileListDto);
+    List<UserFileVO> getFileList(QueryFileListDto queryFileListDto);
 
     /**
      * 单文件上传
