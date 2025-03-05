@@ -2,7 +2,7 @@ package com.xiaohui.pocket.storage.engine.local;
 
 
 import com.xiaohui.pocket.config.property.LocalStorageEngineProperties;
-import com.xiaohui.pocket.storage.engine.context.StoreFileContext;
+import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -40,7 +40,7 @@ public class LocalStorageEngineTest {
         String filename = "test.txt";
         String content = "Hello, World!";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes());
-        StoreFileContext context = StoreFileContext.builder()
+        StoreFileDto context = StoreFileDto.builder()
                 .filename(filename)
                 .inputStream(inputStream)
                 .totalSize((long) content.length()).build();

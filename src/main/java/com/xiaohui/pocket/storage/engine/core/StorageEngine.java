@@ -1,6 +1,6 @@
 package com.xiaohui.pocket.storage.engine.core;
 
-import com.xiaohui.pocket.storage.engine.context.StoreFileContext;
+import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
 import java.io.IOException;
 
@@ -19,6 +19,6 @@ public interface StorageEngine {
      * @return 文件保存后的物理路径
      * @throws IOException 文件存储异常
      */
-    String store(StoreFileContext context) throws IOException;
+    String store(StoreFileDto context) throws IOException;
 
 }

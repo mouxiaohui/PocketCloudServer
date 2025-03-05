@@ -1,7 +1,6 @@
 package com.xiaohui.pocket.system.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -10,9 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @author xiaohui
  * @since 2025/3/1
  */
-@Builder
-@Getter
-public class RealFileUploadDto {
+@Data
+public class FileUploadDto {
 
     /**
      * 文件名称

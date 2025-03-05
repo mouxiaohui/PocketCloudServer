@@ -6,11 +6,16 @@ import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
+import com.xiaohui.pocket.system.enums.FileTypeEnum;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
 import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
+import com.xiaohui.pocket.system.model.dto.FileSaveDto;
+import com.xiaohui.pocket.system.model.dto.FileUploadDto;
 import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
 
     private final FileConverter fileConverter;
 
+    private final RealFileService realFileService;
+
     /**
      * 创建用户文件夹
      *
@@ -36,7 +43,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
      */
     @Override
     public void createFolder(CreateFolderDto createFolderDto) {
-        UserFile userFile = fileConverter.toEntity(createFolderDto);
+        UserFile userFile = fileConverter.toUserFileEntity(createFolderDto);
         userFile.setFolderFlag(FolderFlagEnum.YES.getCode());
         userFile.setCreateUser(createFolderDto.getUserId());
         userFile.setUpdateUser(createFolderDto.getUserId());
@@ -73,14 +80,25 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         return null;
     }
 
-//    /**
-//     * 单文件上传
-//     *
-//     * @param realFileUploadForm 文件上传参数
-//     */
-//    @Override
-//    public void upload(RealFileUploadForm realFileUploadForm) {
-//        RealFileUploadDto realFileUploadDto = realFileConverter.toUploadDto(realFileUploadForm);
-//    }
+    /**
+     * 单文件上传
+     *
+     * @param fileUploadDto 文件上传参数
+     */
+    @Override
+    public void upload(FileUploadDto fileUploadDto) {
+        // 保存物理文件
+        FileSaveDto fileSaveDto = fileConverter.toSaveDto(fileUploadDto);
+        RealFile realFile = realFileService.save(fileSaveDto);
+
+        // 保存用户文件记录
+        UserFile userFile = fileConverter.toUserFileEntity(fileUploadDto);
+        userFile.setRealFileId(realFile.getId());
+        userFile.setFileSizeDesc(realFile.getFileSizeDesc());
+        userFile.setFileType(FileTypeEnum.getFileTypeCode(realFile.getFileSuffix()));
+        if (!save(userFile)) {
+            throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
+        }
+    }
 
 }

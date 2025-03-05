@@ -41,8 +41,8 @@ public enum ResultCode implements IResultCode, Serializable {
     CAPTCHA_VERIFICATION_CODE_ERROR("A0203", "图片验证码错误"),
     CAPTCHA_VERIFICATION_CODE_EXPIRED("A0204", "图片验证码已过期"),
     /** 二级宏观错误码  */
-    ACCESS_UNAUTHORIZED("A0301", "访问未授权"),
-    ACCESS_TOKEN_INVALID("A0302", "访问令牌无效或已过期"),
+    ACCESS_UNAUTHORIZED("A0300", "访问未授权"),
+    ACCESS_TOKEN_INVALID("A0301", "访问令牌无效或已过期"),
 
 
     /** 一级宏观错误码  */
@@ -51,7 +51,10 @@ public enum ResultCode implements IResultCode, Serializable {
     SYSTEM_EXECUTION_TIMEOUT("B0100", "系统执行超时"),
     /** 二级宏观错误码  */
     CREATE_FOLDER_FAILED("B0200", "创建文件夹失败"),
-
+    FILE_UPLOAD_FAILED("B0201", "文件上传失败"),
+    SAVE_FILE_INFO_FAILED("B0202", "保存文件信息失败"),
+    GET_FILE_TYPE_FAILED("B0203", "获取文件类型失败"),
+    GET_USER_ROOT_FOLDER_INFO_FAILED("B0204", "获取用户根文件夹信息失败"),
 
 
     /** 一级宏观错误码  */

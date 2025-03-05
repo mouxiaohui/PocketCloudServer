@@ -2,6 +2,8 @@ package com.xiaohui.pocket.common.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import jakarta.activation.MimetypesFileTypeMap;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -11,6 +13,8 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.util.Objects;
 
 /**
  * 公用的文件工具类
@@ -18,6 +22,7 @@ import java.nio.channels.ReadableByteChannel;
  * @author xiaohui
  * @since 2025/3/3
  */
+@Slf4j
 public class FileUtils {
 
     /**
@@ -28,9 +33,31 @@ public class FileUtils {
      */
     public static String getFileSuffix(String filename) {
         if (StringUtils.isBlank(filename) || filename.lastIndexOf('.') == -1) {
-            return "";
+            return StringUtils.EMPTY;
         }
         return filename.substring(filename.lastIndexOf('.')).toLowerCase();
+    }
+
+    /**
+     * 获取文件的content-type
+     *
+     * @param filePath 文件路径
+     * @return 文件的content-type
+     */
+    public static String getContentType(String filePath) {
+        // 利用nio提供的类判断文件ContentType
+        File file = new File(filePath);
+        String contentType = null;
+        try {
+            contentType = Files.probeContentType(file.toPath());
+        } catch (IOException e) {
+            log.error("getContentType error: {}", e.getMessage());
+        }
+        //若失败则调用另一个方法进行判断
+        if (StringUtils.isBlank(contentType)) {
+            contentType = new MimetypesFileTypeMap().getContentType(file);
+        }
+        return contentType;
     }
 
     /**
@@ -102,4 +129,23 @@ public class FileUtils {
             throw new IOException("Error writing stream to file: " + targetFile.getAbsolutePath(), e);
         }
     }
+
+    /**
+     * 通过文件大小转化文件大小的展示名称，字符串格式
+     * <p>
+     * (20) -> 20 bytes <p>
+     * (20 * 1024) -> 20 KB <p>
+     * (20 * 1024  * 1024) -> 20 MB
+     *
+     * @param totalSize 文件大小
+     * @return 文件大小的展示名称
+     */
+    public static String byteCountToDisplaySize(Long totalSize) {
+        if (Objects.isNull(totalSize)) {
+            return StringUtils.EMPTY;
+        }
+
+        return org.apache.commons.io.FileUtils.byteCountToDisplaySize(totalSize);
+    }
+
 }

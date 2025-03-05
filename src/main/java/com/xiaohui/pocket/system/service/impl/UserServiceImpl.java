@@ -16,6 +16,7 @@ import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
 import com.xiaohui.pocket.system.model.dto.UserLoginDto;
 import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
 import com.xiaohui.pocket.system.model.entity.User;
+import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
 import com.xiaohui.pocket.system.service.CodeService;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -151,13 +152,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public UserInfoVO info() {
+        // 上下文中获取用户id
         Long userId = BaseContext.getUserId();
+        // 数据库中查询用户
         User user = getById(userId);
         if (Objects.isNull(user)) {
             throw new BusinessException(ResultCode.USER_NOT_EXISTS);
         }
 
-        return userConverter.toInfoVO(user);
+        // 查询用户根目录信息
+        UserFile userFile = userFileService.getUserRootFolder(userId);
+        if (Objects.isNull(userFile)) {
+            throw new BusinessException(ResultCode.GET_USER_ROOT_FOLDER_INFO_FAILED);
+        }
+
+        UserInfoVO userInfoVO = userConverter.toInfoVO(user);
+        userInfoVO.setRootFileId(userFile.getId());
+        userInfoVO.setRootFilename(userFile.getFilename());
+        return userInfoVO;
     }
 
     /**

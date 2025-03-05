@@ -37,6 +37,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <jaxb.version>2.3.0</jaxb.version>
         <ip2region.version>2.7.0</ip2region.version>
+        <commons-io.version>2.14.0</commons-io.version>
     </properties>
 
     <dependencies>
@@ -170,6 +171,13 @@
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
             <version>${ip2region.version}</version>
+        </dependency>
+
+        <!-- 主要用于简化 Java I/O 操作。它提供了许多实用的类和方法来处理文件、目录、输入输出流等 -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
 
     </dependencies>

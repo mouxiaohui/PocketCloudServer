@@ -2,9 +2,10 @@ package com.xiaohui.pocket.storage.engine.local;
 
 import com.xiaohui.pocket.common.utils.FileUtils;
 import com.xiaohui.pocket.config.property.LocalStorageEngineProperties;
-import com.xiaohui.pocket.storage.engine.context.StoreFileContext;
 import com.xiaohui.pocket.storage.engine.core.AbstractStorageEngine;
+import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.IOException;
  * @author xiaohui
  * @since 2025/3/1
  */
+@Component
 @RequiredArgsConstructor
 public class LocalStorageEngine extends AbstractStorageEngine {
 
@@ -28,7 +30,7 @@ public class LocalStorageEngine extends AbstractStorageEngine {
      * @throws IOException 文件存储异常
      */
     @Override
-    public String store(StoreFileContext context) throws IOException {
+    public String store(StoreFileDto context) throws IOException {
         checkStoreFileContext(context);
         String realFilePath = FileUtils.generateStoreFileRealPath(properties.getRootFilePath(), context.getFilename());
         FileUtils.writeStreamToFile(context.getInputStream(), new File(realFilePath), context.getTotalSize());

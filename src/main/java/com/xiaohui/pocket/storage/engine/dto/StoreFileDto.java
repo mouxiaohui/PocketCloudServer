@@ -1,10 +1,9 @@
-package com.xiaohui.pocket.storage.engine.context;
+package com.xiaohui.pocket.storage.engine.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.InputStream;
-import java.io.Serializable;
 
 /**
  * 文件存储引擎存储物理文件的上下文实体
@@ -14,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class StoreFileContext implements Serializable {
+public class StoreFileDto {
 
     /**
      * 上传的文件名称

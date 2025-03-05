@@ -89,7 +89,7 @@ springdoc:
       paths-to-match: "/**"
       # 需要扫描的包，以确定哪些控制器包含在当前分组中
       packages-to-scan:
-        - com.xiaohui.pocket.controller
+        - com.xiaohui.pocket.system.controller
   # 默认的扁平化参数对象配置，设置为true以启用
   default-flat-param-object: true
 

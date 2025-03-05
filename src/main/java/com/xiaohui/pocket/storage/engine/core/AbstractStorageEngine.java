@@ -1,7 +1,7 @@
 package com.xiaohui.pocket.storage.engine.core;
 
 import cn.hutool.core.lang.Assert;
-import com.xiaohui.pocket.storage.engine.context.StoreFileContext;
+import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
 /**
  * 文件存储引擎模块公用抽象类
@@ -18,7 +18,7 @@ public abstract class AbstractStorageEngine implements StorageEngine {
      *
      * @param context 上传物理文件的上下文信息
      */
-    protected void checkStoreFileContext(StoreFileContext context) {
+    protected void checkStoreFileContext(StoreFileDto context) {
         Assert.notBlank(context.getFilename(), "文件名称不能为空");
         Assert.notNull(context.getTotalSize(), "文件的总大小不能为空");
         Assert.notNull(context.getInputStream(), "文件不能为空");

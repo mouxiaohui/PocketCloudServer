@@ -1,5 +1,7 @@
 package com.xiaohui.pocket.system.model.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.xiaohui.pocket.common.serializer.IdEncryptSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +20,12 @@ public class UserInfoVO {
 
     @Schema(description = "邮箱")
     private String email;
+
+    @Schema(description = "用户根目录的加密ID")
+    @JsonSerialize(using = IdEncryptSerializer.class) // 加密ID
+    private Long rootFileId;
+
+    @Schema(description = "用户根目录名称")
+    private String rootFilename;
 
 }
