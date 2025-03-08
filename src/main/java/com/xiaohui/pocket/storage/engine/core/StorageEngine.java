@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.storage.engine.core;
 
+import com.xiaohui.pocket.storage.engine.dto.MergeFileDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileChunkDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
@@ -39,5 +40,15 @@ public interface StorageEngine {
      * @throws IOException 文件存储异常
      */
     String storeChunk(StoreFileChunkDto storeFileChunkDto) throws IOException;
+
+
+    /**
+     * 合并文件分片
+     *
+     * @param mergeFileDto 合并文件分片上下文信息
+     * @return 合并后的文件物理路径
+     * @throws IOException 文件合并异常
+     */
+    String mergeFile(MergeFileDto mergeFileDto) throws IOException;
 
 }

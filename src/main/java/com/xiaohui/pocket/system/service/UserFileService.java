@@ -63,6 +63,13 @@ public interface UserFileService extends IService<UserFile> {
     FileChunkUploadVO chunkUpload(FileChunkUploadDto fileChunkUploadDto);
 
     /**
+     * 文件分片合并
+     *
+     * @param fileChunkMergeDto 文件分片合并参数
+     */
+    void mergeFile(FileChunkMergeDto fileChunkMergeDto);
+
+    /**
      * 文件秒传功能
      *
      * @param secUploadFileDto 文件秒传参数

@@ -1,6 +1,7 @@
 package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaohui.pocket.system.model.dto.FileChunkMergeAndSaveDto;
 import com.xiaohui.pocket.system.model.dto.FileSaveDto;
 import com.xiaohui.pocket.system.model.dto.QueryRealFileListDto;
 import com.xiaohui.pocket.system.model.entity.RealFile;
@@ -30,5 +31,13 @@ public interface RealFileService extends IService<RealFile> {
      * @return 物理文件保存的信息
      */
     RealFile save(FileSaveDto fileSaveDto);
+
+    /**
+     * 合并物理文件并保存物理文件记录
+     *
+     * @param fileChunkMergeAndSaveDto 文件分片合并和保存的实体
+     * @return 保存后的物理文件记录
+     */
+    RealFile mergeFileChunkAndSaveFile(FileChunkMergeAndSaveDto fileChunkMergeAndSaveDto);
 
 }

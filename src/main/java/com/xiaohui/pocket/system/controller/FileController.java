@@ -104,6 +104,14 @@ public class FileController {
         return Result.success(vo);
     }
 
+    @Operation(summary = "文件分片合并")
+    @PostMapping("file/merge")
+    public Result<Void> mergeFile(@Validated @RequestBody FileChunkMergeForm fileChunkMergeForm) {
+        FileChunkMergeDto fileChunkMergeDto = fileConverter.toChunkMergeDto(fileChunkMergeForm);
+        userFileService.mergeFile(fileChunkMergeDto);
+        return Result.success();
+    }
+
     @Operation(summary = "文件秒传")
     @PostMapping("/sec-upload")
     @Log(value = "文件秒传", module = LogModuleEnum.File)

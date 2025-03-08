@@ -1,6 +1,7 @@
 package com.xiaohui.pocket.storage.engine.core;
 
 import cn.hutool.core.lang.Assert;
+import com.xiaohui.pocket.storage.engine.dto.MergeFileDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
 import java.util.List;
@@ -33,6 +34,18 @@ public abstract class AbstractStorageEngine implements StorageEngine {
      */
     protected void checkArguments(List<String> realFilePathList) {
         Assert.notEmpty(realFilePathList, "要删除的文件路径列表不能为空");
+    }
+
+    /**
+     * 检查文件分片合并的上线文实体信息
+     *
+     * @param mergeFileDto 文件分片合并的上线文实体信息
+     */
+    protected void checkMergeFileContext(MergeFileDto mergeFileDto) {
+        Assert.notBlank(mergeFileDto.getFilename(), "文件名称不能为空");
+        Assert.notBlank(mergeFileDto.getIdentifier(), "文件唯一标识不能为空");
+        Assert.notNull(mergeFileDto.getUserId(), "当前登录用户的ID不能为空");
+        Assert.notEmpty(mergeFileDto.getRealPathList(), "文件分片列表不能为空");
     }
 
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
+import com.xiaohui.pocket.common.utils.FileUtils;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.enums.FileTypeEnum;
@@ -141,6 +142,28 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         FileChunkSaveDto fileChunkSaveDto = fileConverter.toChunkSaveDto(fileChunkUploadDto);
         MergeFlagEnum mergeFlagEnum = fileChunkService.saveChunkFile(fileChunkSaveDto);
         return FileChunkUploadVO.builder().mergeFlag(mergeFlagEnum.getCode()).build();
+    }
+
+    /**
+     * 文件分片合并
+     * <p>
+     * 1、文件分片物理合并
+     * 2、保存文件实体记录
+     * 3、保存文件用户关系映射
+     *
+     * @param fileChunkMergeDto 文件分片合并参数
+     */
+    @Override
+    public void mergeFile(FileChunkMergeDto fileChunkMergeDto) {
+        FileChunkMergeAndSaveDto chunkMergeAndSaveDto = fileConverter.toChunkMergeAndSaveDto(fileChunkMergeDto);
+        RealFile realFile = realFileService.mergeFileChunkAndSaveFile(chunkMergeAndSaveDto);
+
+        UserFile userFile = fileConverter.toUserFileEntity(fileChunkMergeDto);
+        userFile.setFileType(FileTypeEnum.getFileTypeCode(FileUtils.getFileSuffix(fileChunkMergeDto.getFilename())));
+        userFile.setFileSizeDesc(realFile.getFileSizeDesc());
+        if (save(userFile)) {
+            throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
+        }
     }
 
     /**

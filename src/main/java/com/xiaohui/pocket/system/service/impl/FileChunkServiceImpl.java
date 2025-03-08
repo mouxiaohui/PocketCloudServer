@@ -10,6 +10,7 @@ import com.xiaohui.pocket.storage.engine.dto.StoreFileChunkDto;
 import com.xiaohui.pocket.system.enums.MergeFlagEnum;
 import com.xiaohui.pocket.system.mapper.FileChunkMapper;
 import com.xiaohui.pocket.system.model.dto.FileChunkSaveDto;
+import com.xiaohui.pocket.system.model.dto.QueryFileChunkListDto;
 import com.xiaohui.pocket.system.model.entity.FileChunk;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author xiaohui
@@ -63,6 +65,15 @@ public class FileChunkServiceImpl extends ServiceImpl<FileChunkMapper, FileChunk
             e.printStackTrace();
             throw new BusinessException("文件分片上传失败");
         }
+    }
+
+    @Override
+    public List<FileChunk> getFileChunkList(QueryFileChunkListDto queryFileChunkListDto) {
+        QueryWrapper<FileChunk> queryWrapper = Wrappers.query();
+        queryWrapper.eq("identifier", queryFileChunkListDto.getIdentifier());
+        queryWrapper.eq("create_user", queryFileChunkListDto.getCreateUser());
+        queryWrapper.ge("expiration_time", new Date());
+        return list(queryWrapper);
     }
 
     /**

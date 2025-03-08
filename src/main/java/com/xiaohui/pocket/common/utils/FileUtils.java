@@ -2,6 +2,7 @@ package com.xiaohui.pocket.common.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import jakarta.activation.MimetypesFileTypeMap;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -161,6 +165,30 @@ public class FileUtils {
         outputChannel.close();
         randomAccessFile.close();
         inputStream.close();
+    }
+
+    /**
+     * 追加写文件
+     *
+     * @param target 目标文件
+     * @param source 源文件
+     */
+    public static void appendWrite(Path target, Path source) throws IOException {
+        Files.write(target, Files.readAllBytes(source), StandardOpenOption.APPEND);
+    }
+
+    /**
+     * 批量删除物理文件
+     *
+     * @param realFilePathList 文件路径列表
+     */
+    public static void deleteFiles(List<String> realFilePathList) throws IOException {
+        if (CollectionUtils.isEmpty(realFilePathList)) {
+            return;
+        }
+        for (String realFilePath : realFilePathList) {
+            org.apache.commons.io.FileUtils.forceDelete(new File(realFilePath));
+        }
     }
 
     /**

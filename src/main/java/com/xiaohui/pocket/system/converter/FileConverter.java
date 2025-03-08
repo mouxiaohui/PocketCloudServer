@@ -33,11 +33,19 @@ public interface FileConverter {
     @Mapping(target = "updateUser", source = "userId")
     UserFile toUserFileEntity(SecUploadFileDto secUploadFileDto);
 
+    @Mapping(target = "folderFlag", expression = "java(com.xiaohui.pocket.system.enums.FolderFlagEnum.NO.getCode())")
+    @Mapping(target = "createUser", source = "userId")
+    @Mapping(target = "updateUser", source = "userId")
+    UserFile toUserFileEntity(FileChunkMergeDto fileChunkMergeDto);
+
     @Mapping(target = "fileSize", expression = "java(String.valueOf(fileSaveDto.getTotalSize()))")
     @Mapping(target = "fileSizeDesc", expression = "java(com.xiaohui.pocket.common.utils.FileUtils.byteCountToDisplaySize(fileSaveDto.getTotalSize()))")
     @Mapping(target = "fileSuffix", expression = "java(com.xiaohui.pocket.common.utils.FileUtils.getFileSuffix(fileSaveDto.getFilename()))")
     @Mapping(target = "createUser", source = "userId")
     RealFile toRealFileEntity(FileSaveDto fileSaveDto);
+
+    @Mapping(target = "fileSuffix", expression = "java(com.xiaohui.pocket.common.utils.FileUtils.getFileSuffix(fileChunkMergeAndSaveDto.getFilename()))")
+    RealFile toRealFileEntity(FileChunkMergeAndSaveDto fileChunkMergeAndSaveDto);
 
     @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(createFolderForm.getParentId()))")
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
@@ -58,6 +66,11 @@ public interface FileConverter {
     FileChunkUploadDto toChunkUploadDto(FileChunkUploadForm fileChunkUploadForm);
 
     FileChunkSaveDto toChunkSaveDto(FileChunkUploadDto fileChunkUploadDto);
+
+    @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
+    FileChunkMergeDto toChunkMergeDto(FileChunkMergeForm fileChunkMergeForm);
+
+    FileChunkMergeAndSaveDto toChunkMergeAndSaveDto(FileChunkMergeDto fileChunkMergeDto);
 
     QueryRealFileListDto toQueryRealFileListDto(SecUploadFileDto secUploadFileDto);
 
