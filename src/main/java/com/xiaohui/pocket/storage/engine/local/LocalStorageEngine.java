@@ -3,6 +3,7 @@ package com.xiaohui.pocket.storage.engine.local;
 import com.xiaohui.pocket.common.utils.FileUtils;
 import com.xiaohui.pocket.config.property.LocalStorageEngineProperties;
 import com.xiaohui.pocket.storage.engine.core.AbstractStorageEngine;
+import com.xiaohui.pocket.storage.engine.dto.StoreFileChunkDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -51,6 +52,21 @@ public class LocalStorageEngine extends AbstractStorageEngine {
         for (String realFilePath : realFilePathList) {
             org.apache.commons.io.FileUtils.forceDelete(new File(realFilePath));
         }
+    }
+
+    /**
+     * 存储物理文件的分片
+     *
+     * @param storeFileChunkDto 存储物理文件分片上下文信息
+     * @return chunk物理存储路径
+     * @throws IOException 文件存储异常
+     */
+    @Override
+    public String storeChunk(StoreFileChunkDto storeFileChunkDto) throws IOException {
+        String basePath = properties.getRootFileChunkPath();
+        String realFilePath = FileUtils.generateStoreFileChunkRealPath(basePath, storeFileChunkDto.getIdentifier(), storeFileChunkDto.getChunkNumber());
+        FileUtils.writeStream2File(storeFileChunkDto.getInputStream(), new File(realFilePath), storeFileChunkDto.getTotalSize());
+        return realFilePath;
     }
 
 }

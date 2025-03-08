@@ -1,9 +1,9 @@
 package com.xiaohui.pocket.system.controller;
 
-import com.xiaohui.pocket.common.annotation.Log;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.common.result.ResultCode;
+import com.xiaohui.pocket.core.annotation.Log;
 import com.xiaohui.pocket.system.converter.UserConverter;
 import com.xiaohui.pocket.system.model.dto.UserLoginDto;
 import com.xiaohui.pocket.system.model.dto.UserRegisterDto;

@@ -3,6 +3,7 @@ package com.xiaohui.pocket.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 
 import java.util.List;
@@ -52,6 +53,14 @@ public interface UserFileService extends IService<UserFile> {
      * @param fileUploadDto 文件上传参数
      */
     void upload(FileUploadDto fileUploadDto);
+
+    /**
+     * 文件分片上传
+     *
+     * @param fileChunkUploadDto 文件分片上传参数
+     * @return 文件分片上传结果
+     */
+    FileChunkUploadVO chunkUpload(FileChunkUploadDto fileChunkUploadDto);
 
     /**
      * 文件秒传功能

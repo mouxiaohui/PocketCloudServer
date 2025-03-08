@@ -3,10 +3,7 @@ package com.xiaohui.pocket.system.converter;
 import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.form.CreateFolderForm;
-import com.xiaohui.pocket.system.model.form.FileUploadForm;
-import com.xiaohui.pocket.system.model.form.SecUploadFileForm;
-import com.xiaohui.pocket.system.model.form.UpdateFilenameForm;
+import com.xiaohui.pocket.system.model.form.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -56,6 +53,11 @@ public interface FileConverter {
 
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
     SecUploadFileDto toSecUploadFileDto(SecUploadFileForm secUploadFileForm);
+
+    @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
+    FileChunkUploadDto toChunkUploadDto(FileChunkUploadForm fileChunkUploadForm);
+
+    FileChunkSaveDto toChunkSaveDto(FileChunkUploadDto fileChunkUploadDto);
 
     QueryRealFileListDto toQueryRealFileListDto(SecUploadFileDto secUploadFileDto);
 

@@ -10,11 +10,14 @@ import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.enums.FileTypeEnum;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
+import com.xiaohui.pocket.system.enums.MergeFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
 import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
+import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
+import com.xiaohui.pocket.system.service.FileChunkService;
 import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     private final FileConverter fileConverter;
 
     private final RealFileService realFileService;
+
+    private final FileChunkService fileChunkService;
 
     /**
      * 创建文件夹
@@ -119,6 +124,23 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         if (!save(userFile)) {
             throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
         }
+    }
+
+    /**
+     * 文件分片上传
+     * <p>
+     * 1、上传实体文件
+     * 2、保存分片文件记录
+     * 3、校验是否全部分片上传完成
+     *
+     * @param fileChunkUploadDto 文件分片上传参数
+     * @return 文件分片上传结果
+     */
+    @Override
+    public FileChunkUploadVO chunkUpload(FileChunkUploadDto fileChunkUploadDto) {
+        FileChunkSaveDto fileChunkSaveDto = fileConverter.toChunkSaveDto(fileChunkUploadDto);
+        MergeFlagEnum mergeFlagEnum = fileChunkService.saveChunkFile(fileChunkSaveDto);
+        return FileChunkUploadVO.builder().mergeFlag(mergeFlagEnum.getCode()).build();
     }
 
     /**

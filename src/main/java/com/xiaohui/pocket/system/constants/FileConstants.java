@@ -26,4 +26,9 @@ public interface FileConstants {
      */
     String FILE_TYPE_SPLIT_CHAR = ",";
 
+    /**
+     * 公用的字符串分隔符
+     */
+    String COMMON_SEPARATOR = "__,__";
+
 }

@@ -2,6 +2,7 @@ package com.xiaohui.pocket.common.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.xiaohui.pocket.system.constants.FileConstants;
 import jakarta.activation.MimetypesFileTypeMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,20 @@ public class FileUtils {
     }
 
     /**
+     * 生成文件分片的存储路径
+     * <p>
+     * 生成规则：基础路径 + 年 + 月 + 日 + 唯一标识 + 随机的文件名称 + __,__ + 文件分片的下标
+     *
+     * @param basePath    基础路径
+     * @param identifier  唯一标识
+     * @param chunkNumber 文件分片的下标
+     * @return 文件分片的存储路径
+     */
+    public static String generateStoreFileChunkRealPath(String basePath, String identifier, Integer chunkNumber) {
+        return basePath + File.separator + DateUtil.thisYear() + File.separator + (DateUtil.thisMonth() + 1) + File.separator + DateUtil.thisDayOfMonth() + File.separator + identifier + File.separator + IdUtil.randomUUID() + FileConstants.COMMON_SEPARATOR + chunkNumber;
+    }
+
+    /**
      * 生成默认的文件分片的存储路径前缀
      *
      * @return 默认的文件分片的存储路径前缀
@@ -121,13 +136,31 @@ public class FileUtils {
                 // 将 InputStream 转换为 ReadableByteChannel
                 ReadableByteChannel sourceChannel = Channels.newChannel(inputStream);
                 // 使用 RandomAccessFile 打开目标文件并获取 FileChannel
-                RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "rw");
-                FileChannel targetChannel = randomAccessFile.getChannel()
-        ) {
+                RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "rw"); FileChannel targetChannel = randomAccessFile.getChannel()) {
             targetChannel.transferFrom(sourceChannel, 0, totalSize);
         } catch (IOException e) {
             throw new IOException("Error writing stream to file: " + targetFile.getAbsolutePath(), e);
         }
+    }
+
+    /**
+     * 将文件的输入流写入到文件中
+     * 使用底层的sendfile零拷贝来提高传输效率
+     *
+     * @param inputStream 输入流
+     * @param targetFile  目标文件
+     * @param totalSize   文件的总大小
+     */
+    public static void writeStream2File(InputStream inputStream, File targetFile, Long totalSize) throws IOException {
+        createFile(targetFile);
+        RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "rw");
+        FileChannel outputChannel = randomAccessFile.getChannel();
+        ReadableByteChannel inputChannel = Channels.newChannel(inputStream);
+        outputChannel.transferFrom(inputChannel, 0L, totalSize);
+        inputChannel.close();
+        outputChannel.close();
+        randomAccessFile.close();
+        inputStream.close();
     }
 
     /**

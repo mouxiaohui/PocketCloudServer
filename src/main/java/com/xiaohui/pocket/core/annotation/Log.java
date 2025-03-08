@@ -1,4 +1,4 @@
-package com.xiaohui.pocket.common.annotation;
+package com.xiaohui.pocket.core.annotation;
 
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 
@@ -40,6 +40,7 @@ public @interface Log {
      * 是否记录响应结果
      * <br/>
      * 响应结果默认不记录，避免日志过大
+     *
      * @return 是否记录响应结果
      */
     boolean result() default false;

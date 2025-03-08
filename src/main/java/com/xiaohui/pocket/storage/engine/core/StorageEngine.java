@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.storage.engine.core;
 
+import com.xiaohui.pocket.storage.engine.dto.StoreFileChunkDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
 import java.io.IOException;
@@ -29,5 +30,14 @@ public interface StorageEngine {
      * @throws IOException 文件删除异常
      */
     void delete(List<String> realFilePathList) throws IOException;
+
+    /**
+     * 存储物理文件的分片
+     *
+     * @param storeFileChunkDto 存储物理文件分片上下文信息
+     * @return chunk物理存储路径
+     * @throws IOException 文件存储异常
+     */
+    String storeChunk(StoreFileChunkDto storeFileChunkDto) throws IOException;
 
 }

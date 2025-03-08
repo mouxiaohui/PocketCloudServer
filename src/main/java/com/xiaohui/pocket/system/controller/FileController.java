@@ -1,17 +1,15 @@
 package com.xiaohui.pocket.system.controller;
 
-import com.xiaohui.pocket.common.annotation.Log;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.common.utils.IdUtil;
+import com.xiaohui.pocket.core.annotation.Log;
 import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.model.dto.*;
-import com.xiaohui.pocket.system.model.form.CreateFolderForm;
-import com.xiaohui.pocket.system.model.form.FileUploadForm;
-import com.xiaohui.pocket.system.model.form.SecUploadFileForm;
-import com.xiaohui.pocket.system.model.form.UpdateFilenameForm;
+import com.xiaohui.pocket.system.model.form.*;
+import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,6 +93,15 @@ public class FileController {
         FileUploadDto uploadDto = fileConverter.toUploadDto(fileUploadForm);
         userFileService.upload(uploadDto);
         return Result.success();
+    }
+
+    @Operation(summary = "文件分片上传")
+    @PostMapping("file/chunk-upload")
+    @Log(value = "文件分片上传", module = LogModuleEnum.File)
+    public Result<FileChunkUploadVO> chunkUpload(@Validated FileChunkUploadForm fileChunkUploadForm) {
+        FileChunkUploadDto fileChunkUploadDto = fileConverter.toChunkUploadDto(fileChunkUploadForm);
+        FileChunkUploadVO vo = userFileService.chunkUpload(fileChunkUploadDto);
+        return Result.success(vo);
     }
 
     @Operation(summary = "文件秒传")

@@ -47,7 +47,7 @@ public class LogAspect {
 
     private final HttpServletRequest request;
 
-    @Pointcut("@annotation(com.xiaohui.pocket.common.annotation.Log)")
+    @Pointcut("@annotation(com.xiaohui.pocket.core.annotation.Log)")
     public void logPointcut() {
     }
 
@@ -59,7 +59,7 @@ public class LogAspect {
      * @return 返回结果
      */
     @Around("logPointcut() && @annotation(logAnnotation)")
-    public Object around(ProceedingJoinPoint joinPoint, com.xiaohui.pocket.common.annotation.Log logAnnotation) throws Throwable {
+    public Object around(ProceedingJoinPoint joinPoint, com.xiaohui.pocket.core.annotation.Log logAnnotation) throws Throwable {
         TimeInterval timer = DateUtil.timer();
 
         try {
@@ -86,7 +86,7 @@ public class LogAspect {
      */
     private void saveLog(
             final JoinPoint joinPoint, final Exception e, Object jsonResult,
-            com.xiaohui.pocket.common.annotation.Log logAnnotation, Long executionTime
+            com.xiaohui.pocket.core.annotation.Log logAnnotation, Long executionTime
     ) {
         // 创建日志记录
         Log log = new Log();
