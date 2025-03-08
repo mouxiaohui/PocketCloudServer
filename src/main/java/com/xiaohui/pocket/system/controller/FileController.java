@@ -7,12 +7,10 @@ import com.xiaohui.pocket.common.utils.IdUtil;
 import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
-import com.xiaohui.pocket.system.model.dto.CreateFolderDto;
-import com.xiaohui.pocket.system.model.dto.FileUploadDto;
-import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
-import com.xiaohui.pocket.system.model.dto.UpdateFilenameDto;
+import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.form.CreateFolderForm;
 import com.xiaohui.pocket.system.model.form.FileUploadForm;
+import com.xiaohui.pocket.system.model.form.SecUploadFileForm;
 import com.xiaohui.pocket.system.model.form.UpdateFilenameForm;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -43,7 +41,7 @@ public class FileController {
     private final UserFileService userFileService;
 
     @Operation(summary = "查询文件列表")
-    @GetMapping("/files")
+    @GetMapping("/list")
     @Log(value = "查询文件列表", module = LogModuleEnum.File)
     public Result<List<UserFileVO>> list(
             // Url的Param参数必须经过Url编码，否则base64中的+号会被解码为空格，导致parentId解析错误
@@ -93,10 +91,22 @@ public class FileController {
     @Operation(summary = "单文件上传")
     @PostMapping("/upload")
     @Log(value = "单文件上传", module = LogModuleEnum.File)
-    public Result<Void> login(@Validated FileUploadForm fileUploadForm) {
+    public Result<Void> upload(@Validated FileUploadForm fileUploadForm) {
         FileUploadDto uploadDto = fileConverter.toUploadDto(fileUploadForm);
         userFileService.upload(uploadDto);
         return Result.success();
+    }
+
+    @Operation(summary = "文件秒传")
+    @PostMapping("/sec-upload")
+    @Log(value = "文件秒传", module = LogModuleEnum.File)
+    public Result<Void> secUpload(@Validated SecUploadFileForm secUploadFileForm) {
+        SecUploadFileDto secUploadFileDto = fileConverter.toSecUploadFileDto(secUploadFileForm);
+        if (userFileService.secUpload(secUploadFileDto)) {
+            return Result.success();
+        }
+
+        return Result.failed("文件唯一标识不存在，请手动执行文件上传");
     }
 
 }

@@ -2,6 +2,7 @@ package com.xiaohui.pocket.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
@@ -118,6 +119,29 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         if (!save(userFile)) {
             throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
         }
+    }
+
+    /**
+     * 文件秒传功能
+     *
+     * @param secUploadFileDto 文件秒传参数
+     * @return 文件秒传结果
+     */
+    @Override
+    public boolean secUpload(SecUploadFileDto secUploadFileDto) {
+        QueryRealFileListDto queryRealFileListDto = fileConverter.toQueryRealFileListDto(secUploadFileDto);
+        List<RealFile> fileList = realFileService.getFileList(queryRealFileListDto);
+
+        if (CollectionUtils.isNotEmpty(fileList)) {
+            RealFile realFile = fileList.get(0);
+            UserFile userFile = fileConverter.toUserFileEntity(secUploadFileDto);
+            userFile.setRealFileId(realFile.getId());
+            userFile.setFileSizeDesc(realFile.getFileSizeDesc());
+            userFile.setFileType(FileTypeEnum.getFileTypeCode(secUploadFileDto.getFilename()));
+            return save(userFile);
+        }
+
+        return false;
     }
 
 }

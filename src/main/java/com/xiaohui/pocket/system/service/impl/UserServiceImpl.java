@@ -55,9 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean register(UserRegisterDto userRegisterDto) {
         // 检查邮箱验证码是否正确
-//         if (!codeService.checkEmailCode(userRegisterForm.getEmail(), userRegisterForm.getEmailCode())) {
-//             throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_ERROR);
-//         }
+        if (!codeService.checkEmailCode(userRegisterDto.getEmail(), userRegisterDto.getEmailCode())) {
+            throw new BusinessException(ResultCode.EMAIL_VERIFICATION_CODE_ERROR);
+        }
 
         // 构造查询条件，同时检查用户名和邮箱
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
@@ -108,9 +108,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public String login(UserLoginDto userLoginDto) {
         // 检查验证码是否正确
-//         if (!codeService.checkCaptcha(userLoginForm.getCaptcha(), userLoginForm.getCaptchaKey())) {
-//             throw new BusinessException(ResultCode.CAPTCHA_VERIFICATION_CODE_ERROR);
-//         }
+        if (!codeService.checkCaptcha(userLoginDto.getCaptcha(), userLoginDto.getCaptchaKey())) {
+            throw new BusinessException(ResultCode.CAPTCHA_VERIFICATION_CODE_ERROR);
+        }
 
         User user;
         if (userLoginDto.getAccount().contains("@")) {
