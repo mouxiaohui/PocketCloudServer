@@ -139,5 +139,5 @@ captcha:
 storage:
   engine:
     local:
-      root-file-path: ./storage
-      root-file-chunk-path: ./storage/chunk
+      root-file-path: E:\code\2025\PocketCloud\PocketCloudServer\storage
+      root-file-chunk-path: E:\code\2025\PocketCloud\PocketCloudServer\storage\chunk

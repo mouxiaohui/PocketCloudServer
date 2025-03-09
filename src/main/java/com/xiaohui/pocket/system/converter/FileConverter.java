@@ -45,6 +45,7 @@ public interface FileConverter {
     RealFile toRealFileEntity(FileSaveDto fileSaveDto);
 
     @Mapping(target = "fileSuffix", expression = "java(com.xiaohui.pocket.common.utils.FileUtils.getFileSuffix(fileChunkMergeAndSaveDto.getFilename()))")
+    @Mapping(target = "createUser", source = "userId")
     RealFile toRealFileEntity(FileChunkMergeAndSaveDto fileChunkMergeAndSaveDto);
 
     @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(createFolderForm.getParentId()))")

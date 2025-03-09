@@ -187,7 +187,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         UserFile userFile = fileConverter.toUserFileEntity(fileChunkMergeDto);
         userFile.setFileType(FileTypeEnum.getFileTypeCode(FileUtils.getFileSuffix(fileChunkMergeDto.getFilename())));
         userFile.setFileSizeDesc(realFile.getFileSizeDesc());
-        if (save(userFile)) {
+        if (!save(userFile)) {
             throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
         }
     }
