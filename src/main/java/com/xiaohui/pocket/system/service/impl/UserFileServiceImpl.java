@@ -1,8 +1,10 @@
 package com.xiaohui.pocket.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
@@ -14,9 +16,11 @@ import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.enums.MergeFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
 import com.xiaohui.pocket.system.model.dto.*;
+import com.xiaohui.pocket.system.model.entity.FileChunk;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import com.xiaohui.pocket.system.service.RealFileService;
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -145,6 +150,27 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     }
 
     /**
+     * 查询用户已上传的分片列表
+     *
+     * @param queryUploadedChunksDto 查询用户已上传的分片列表参数
+     * @return 用户已上传的分片列表
+     */
+    @Override
+    public UploadedChunksVO getUploadedChunks(QueryUploadedChunksDto queryUploadedChunksDto) {
+        QueryWrapper<FileChunk> queryWrapper = Wrappers.query();
+        queryWrapper.select(new String[]{"chunk_number"});
+        queryWrapper.eq("identifier", queryUploadedChunksDto.getIdentifier());
+        queryWrapper.eq("create_user", queryUploadedChunksDto.getUserId());
+        queryWrapper.gt("expiration_time", new Date());
+
+        List<Integer> uploadedChunks = fileChunkService.listObjs(queryWrapper, value -> (Integer) value);
+
+        UploadedChunksVO vo = new UploadedChunksVO();
+        vo.setUploadedChunks(uploadedChunks);
+        return vo;
+    }
+
+    /**
      * 文件分片合并
      * <p>
      * 1、文件分片物理合并
@@ -182,7 +208,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
             UserFile userFile = fileConverter.toUserFileEntity(secUploadFileDto);
             userFile.setRealFileId(realFile.getId());
             userFile.setFileSizeDesc(realFile.getFileSizeDesc());
-            userFile.setFileType(FileTypeEnum.getFileTypeCode(secUploadFileDto.getFilename()));
+            userFile.setFileType(FileTypeEnum.getFileTypeCode(FileUtils.getFileSuffix(secUploadFileDto.getFilename())));
             return save(userFile);
         }
 

@@ -16,6 +16,10 @@ spring:
       port: 6379
       # password:
       database: 0 # 指定redis的分库(共16个,0-15)
+  servlet:
+    multipart:
+      max-file-size: 3072MB
+      max-request-size: 3072MB
   #邮件服务配置
   mail:
     host: smtp.qq.com # 发送邮件服务器地址

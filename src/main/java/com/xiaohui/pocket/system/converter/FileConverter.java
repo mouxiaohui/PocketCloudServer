@@ -60,6 +60,7 @@ public interface FileConverter {
     FileUploadDto toUploadDto(FileUploadForm fileUploadForm);
 
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
+    @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(secUploadFileForm.getParentId()))")
     SecUploadFileDto toSecUploadFileDto(SecUploadFileForm secUploadFileForm);
 
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
@@ -68,6 +69,7 @@ public interface FileConverter {
     FileChunkSaveDto toChunkSaveDto(FileChunkUploadDto fileChunkUploadDto);
 
     @Mapping(target = "userId", expression = "java(com.xiaohui.pocket.core.context.BaseContext.getUserId())")
+    @Mapping(target = "parentId", expression = "java(com.xiaohui.pocket.common.utils.IdUtil.decrypt(fileChunkMergeForm.getParentId()))")
     FileChunkMergeDto toChunkMergeDto(FileChunkMergeForm fileChunkMergeForm);
 
     FileChunkMergeAndSaveDto toChunkMergeAndSaveDto(FileChunkMergeDto fileChunkMergeDto);

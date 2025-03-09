@@ -10,6 +10,7 @@ import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.form.*;
 import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -96,7 +97,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件分片上传")
-    @PostMapping("file/chunk-upload")
+    @PostMapping("/chunk-upload")
     @Log(value = "文件分片上传", module = LogModuleEnum.File)
     public Result<FileChunkUploadVO> chunkUpload(@Validated FileChunkUploadForm fileChunkUploadForm) {
         FileChunkUploadDto fileChunkUploadDto = fileConverter.toChunkUploadDto(fileChunkUploadForm);
@@ -104,8 +105,22 @@ public class FileController {
         return Result.success(vo);
     }
 
+    @Operation(summary = "查询已经上传的文件分片列表")
+    @GetMapping("/chunk-upload")
+    public Result<UploadedChunksVO> getUploadedChunks(
+            @RequestParam(value = "identifier", required = true)
+            @NotBlank(message = "文件唯一标识不能为空")
+            String identifier
+    ) {
+        QueryUploadedChunksDto queryUploadedChunksDto = new QueryUploadedChunksDto();
+        queryUploadedChunksDto.setIdentifier(identifier);
+        queryUploadedChunksDto.setUserId(BaseContext.getUserId());
+        UploadedChunksVO vo = userFileService.getUploadedChunks(queryUploadedChunksDto);
+        return Result.success(vo);
+    }
+
     @Operation(summary = "文件分片合并")
-    @PostMapping("file/merge")
+    @PostMapping("/merge")
     public Result<Void> mergeFile(@Validated @RequestBody FileChunkMergeForm fileChunkMergeForm) {
         FileChunkMergeDto fileChunkMergeDto = fileConverter.toChunkMergeDto(fileChunkMergeForm);
         userFileService.mergeFile(fileChunkMergeDto);
@@ -115,7 +130,7 @@ public class FileController {
     @Operation(summary = "文件秒传")
     @PostMapping("/sec-upload")
     @Log(value = "文件秒传", module = LogModuleEnum.File)
-    public Result<Void> secUpload(@Validated SecUploadFileForm secUploadFileForm) {
+    public Result<Void> secUpload(@Validated @RequestBody SecUploadFileForm secUploadFileForm) {
         SecUploadFileDto secUploadFileDto = fileConverter.toSecUploadFileDto(secUploadFileForm);
         if (userFileService.secUpload(secUploadFileDto)) {
             return Result.success();

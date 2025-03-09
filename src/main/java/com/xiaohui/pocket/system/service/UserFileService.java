@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.model.dto.*;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
 import com.xiaohui.pocket.system.model.vo.UserFileVO;
 
 import java.util.List;
@@ -61,6 +62,14 @@ public interface UserFileService extends IService<UserFile> {
      * @return 文件分片上传结果
      */
     FileChunkUploadVO chunkUpload(FileChunkUploadDto fileChunkUploadDto);
+
+    /**
+     * 查询用户已上传的分片列表
+     *
+     * @param queryUploadedChunksDto 查询用户已上传的分片列表参数
+     * @return 用户已上传的分片列表
+     */
+    UploadedChunksVO getUploadedChunks(QueryUploadedChunksDto queryUploadedChunksDto);
 
     /**
      * 文件分片合并
