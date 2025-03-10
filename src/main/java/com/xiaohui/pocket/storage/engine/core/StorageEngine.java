@@ -1,6 +1,7 @@
 package com.xiaohui.pocket.storage.engine.core;
 
 import com.xiaohui.pocket.storage.engine.dto.MergeFileDto;
+import com.xiaohui.pocket.storage.engine.dto.ReadFileDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileChunkDto;
 import com.xiaohui.pocket.storage.engine.dto.StoreFileDto;
 
@@ -50,5 +51,13 @@ public interface StorageEngine {
      * @throws IOException 文件合并异常
      */
     String mergeFile(MergeFileDto mergeFileDto) throws IOException;
+
+    /**
+     * 读取文件内容写入到输出流中
+     *
+     * @param readFileDto 读取文件上下文信息
+     * @throws IOException 文件读取异常
+     */
+    void readFile(ReadFileDto readFileDto) throws IOException;
 
 }

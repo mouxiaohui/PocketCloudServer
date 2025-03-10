@@ -43,6 +43,7 @@ public enum ResultCode implements IResultCode, Serializable {
     /** 二级宏观错误码  */
     ACCESS_UNAUTHORIZED("A0300", "访问未授权"),
     ACCESS_TOKEN_INVALID("A0301", "访问令牌无效或已过期"),
+    ID_PARSE_ERROR("A0302", "ID解析错误"),
 
 
     /** 一级宏观错误码  */
@@ -57,6 +58,9 @@ public enum ResultCode implements IResultCode, Serializable {
     GET_USER_ROOT_FOLDER_INFO_FAILED("B0204", "获取用户根文件夹信息失败"),
     PARENT_FOLDER_ID_ERROR("B0205", "父文件夹ID错误"),
     UPDATE_FILENAME_FAILED("B0206", "文件重命名失败"),
+    FILE_RECORD_NOT_EXIST("B0207", "文件记录不存在"),
+    FILE_OPERATION_PERMISSION_DENIED("B0208", "您没有该文件的操作权限"),
+    FILE_DOWNLOAD_FAILED("B0209", "文件下载失败"),
 
 
     /** 一级宏观错误码  */

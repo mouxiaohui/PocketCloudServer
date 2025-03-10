@@ -102,6 +102,11 @@ public interface UserFileService extends IService<UserFile> {
      */
     void deleteFile(DeleteFileDto deleteFileDto);
 
-
+    /**
+     * 文件下载
+     *
+     * @param fileDownloadDto 文件下载参数
+     */
+    void download(FileDownloadDto fileDownloadDto);
 
 }

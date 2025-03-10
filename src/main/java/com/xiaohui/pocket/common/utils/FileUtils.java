@@ -8,13 +8,11 @@ import jakarta.activation.MimetypesFileTypeMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -148,23 +146,22 @@ public class FileUtils {
     }
 
     /**
-     * 将文件的输入流写入到文件中
-     * 使用底层的sendfile零拷贝来提高传输效率
+     * 利用零拷贝技术读取文件内容并写入到文件的输出流中
      *
-     * @param inputStream 输入流
-     * @param targetFile  目标文件
-     * @param totalSize   文件的总大小
+     * @param fileInputStream 输入流
+     * @param outputStream    输出流
+     * @param length          文件长度
+     * @throws IOException IO异常
      */
-    public static void writeStream2File(InputStream inputStream, File targetFile, Long totalSize) throws IOException {
-        createFile(targetFile);
-        RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "rw");
-        FileChannel outputChannel = randomAccessFile.getChannel();
-        ReadableByteChannel inputChannel = Channels.newChannel(inputStream);
-        outputChannel.transferFrom(inputChannel, 0L, totalSize);
-        inputChannel.close();
-        outputChannel.close();
-        randomAccessFile.close();
-        inputStream.close();
+    public static void writeFileToOutputStream(FileInputStream fileInputStream, OutputStream outputStream, long length) throws IOException {
+        FileChannel fileChannel = fileInputStream.getChannel();
+        WritableByteChannel writableByteChannel = Channels.newChannel(outputStream);
+        fileChannel.transferTo(0L, length, writableByteChannel);
+        outputStream.flush();
+        fileInputStream.close();
+        outputStream.close();
+        fileChannel.close();
+        writableByteChannel.close();
     }
 
     /**

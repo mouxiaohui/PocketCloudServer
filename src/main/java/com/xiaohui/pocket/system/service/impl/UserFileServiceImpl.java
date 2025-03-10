@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.FileUtils;
+import com.xiaohui.pocket.storage.engine.core.StorageEngine;
+import com.xiaohui.pocket.storage.engine.dto.ReadFileDto;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.enums.FileTypeEnum;
@@ -26,12 +28,15 @@ import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author xiaohui
@@ -47,6 +52,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     private final RealFileService realFileService;
 
     private final FileChunkService fileChunkService;
+
+    private final StorageEngine storageEngine;
 
     /**
      * 创建文件夹
@@ -199,6 +206,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         UserFile userFile = fileConverter.toUserFileEntity(fileChunkMergeDto);
         userFile.setFileType(FileTypeEnum.getFileTypeCode(FileUtils.getFileSuffix(fileChunkMergeDto.getFilename())));
         userFile.setFileSizeDesc(realFile.getFileSizeDesc());
+        userFile.setRealFileId(realFile.getId());
         if (!save(userFile)) {
             throw new BusinessException(ResultCode.SAVE_FILE_INFO_FAILED);
         }
@@ -242,6 +250,58 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
             queryWrapper.in("id", fileIdList);
             queryWrapper.in("user_id", deleteFileDto.getUserId());
             remove(queryWrapper);
+        }
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param fileDownloadDto 文件下载参数
+     */
+    @Override
+    public void download(FileDownloadDto fileDownloadDto) {
+        UserFile userFile = getById(fileDownloadDto.getFileId());
+        if (Objects.isNull(userFile)) {
+            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
+        }
+        // 校验文件归属
+        if (!userFile.getUserId().equals(fileDownloadDto.getUserId())) {
+            throw new BusinessException(ResultCode.FILE_OPERATION_PERMISSION_DENIED);
+        }
+        // 校验文件是否为文件夹
+        if (FolderFlagEnum.YES.getCode().equals(userFile.getFolderFlag())) {
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
+
+        // 获取文件实体记录
+        RealFile realFile = realFileService.getById(userFile.getRealFileId());
+        if (Objects.isNull(realFile)) {
+            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
+        }
+
+        // 获取文件下载响应对象，并重置响应内容
+        HttpServletResponse response = fileDownloadDto.getResponse();
+        response.reset();
+
+        // 添加内容类型头，指定文件下载的MIME类型
+        response.addHeader(FileConstants.CONTENT_TYPE_STR, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        // 设置响应的内容类型为二进制流
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        // 设置文件下载的Content-Length头信息，告知文件大小
+        response.setContentLengthLong(Long.parseLong(realFile.getFileSize()));
+
+        try {
+            // 尝试设置文件下载的Disposition头信息，包括文件名称
+            response.addHeader(FileConstants.CONTENT_DISPOSITION_STR,
+                    FileConstants.CONTENT_DISPOSITION_VALUE_PREFIX_STR + new String(userFile.getFilename().getBytes(FileConstants.GB2312_STR), FileConstants.IOS_8859_1_STR));
+
+            ReadFileDto readFileDto = new ReadFileDto();
+            readFileDto.setRealPath(realFile.getRealPath());
+            readFileDto.setOutputStream(response.getOutputStream());
+            storageEngine.readFile(readFileDto);
+        } catch (Exception e) {
+            log.error("文件下载失败: {}", e.toString());
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
         }
     }
 

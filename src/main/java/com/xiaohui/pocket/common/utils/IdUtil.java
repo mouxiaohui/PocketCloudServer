@@ -51,7 +51,7 @@ public class IdUtil {
         try {
             content = AES128Util.decrypt(decryptId);
         } catch (Exception e) {
-            throw new BusinessException(ResultCode.PARENT_FOLDER_ID_ERROR);
+            throw new BusinessException(ResultCode.ID_PARSE_ERROR);
         }
 
         if (ArrayUtil.isNotEmpty(content)) {
@@ -59,7 +59,7 @@ public class IdUtil {
             return byteBuffer.getLong();
         }
 
-        throw new BusinessException(ResultCode.PARENT_FOLDER_ID_ERROR);
+        throw new BusinessException(ResultCode.ID_PARSE_ERROR);
     }
 
 }

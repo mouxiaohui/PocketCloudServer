@@ -17,6 +17,7 @@ import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -171,6 +172,21 @@ public class FileController {
         userFileService.deleteFile(deleteFileDto);
 
         return Result.success();
+    }
+
+    @Operation(summary = "文件下载")
+    @GetMapping
+    @Log(value = "文件下载", module = LogModuleEnum.File)
+    public void download(
+            @NotBlank(message = "文件ID不能为空")
+            @RequestParam(value = "fileId")
+            String fileId,
+            HttpServletResponse response) {
+        FileDownloadDto fileDownloadDto = new FileDownloadDto();
+        fileDownloadDto.setFileId(IdUtil.decrypt(fileId));
+        fileDownloadDto.setUserId(BaseContext.getUserId());
+        fileDownloadDto.setResponse(response);
+        userFileService.download(fileDownloadDto);
     }
 
 }

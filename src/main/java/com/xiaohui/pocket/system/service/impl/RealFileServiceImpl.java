@@ -138,7 +138,7 @@ public class RealFileServiceImpl extends ServiceImpl<RealFileMapper, RealFile> i
             }
             return realFile;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("文件分片合并失败: {}", e.toString());
             throw new BusinessException("文件分片合并失败");
         }
     }

@@ -14,6 +14,7 @@ import com.xiaohui.pocket.system.model.dto.file.QueryFileChunkListDto;
 import com.xiaohui.pocket.system.model.entity.FileChunk;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileChunkServiceImpl extends ServiceImpl<FileChunkMapper, FileChunk> implements FileChunkService {
 
     private final StorageEngine storageEngine;
@@ -62,7 +64,7 @@ public class FileChunkServiceImpl extends ServiceImpl<FileChunkMapper, FileChunk
 
             return doJudgeMergeFile(fileChunkSaveDto);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("文件分片上传失败: {}", e.getMessage());
             throw new BusinessException("文件分片上传失败");
         }
     }
