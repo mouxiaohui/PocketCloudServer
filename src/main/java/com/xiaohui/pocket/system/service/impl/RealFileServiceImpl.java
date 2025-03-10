@@ -140,6 +140,10 @@ public class RealFileServiceImpl extends ServiceImpl<RealFileMapper, RealFile> i
         } catch (IOException e) {
             log.error("文件分片合并失败: {}", e.toString());
             throw new BusinessException("文件分片合并失败");
+        } finally {
+            // 删除文件分片记录
+            List<Long> fileChunkIdList = fileChunkList.stream().map(FileChunk::getId).toList();
+            fileChunkService.removeByIds(fileChunkIdList);
         }
     }
 }
