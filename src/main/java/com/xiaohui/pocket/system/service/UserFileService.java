@@ -1,11 +1,12 @@
 package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaohui.pocket.system.model.dto.*;
+import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
+import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
+import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 
 import java.util.List;
 
@@ -47,6 +48,14 @@ public interface UserFileService extends IService<UserFile> {
      * @return 文件信息列表
      */
     List<UserFileVO> getFileList(QueryFileListDto queryFileListDto);
+
+    /**
+     * 文件列表搜索
+     *
+     * @param fileSearchDto 文件搜索参数
+     * @return 文件搜索结果列表
+     */
+    List<FileSearchResultVO> search(FileSearchDto fileSearchDto);
 
     /**
      * 单文件上传

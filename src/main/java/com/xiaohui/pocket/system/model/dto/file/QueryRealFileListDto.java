@@ -1,4 +1,4 @@
-package com.xiaohui.pocket.system.model.dto;
+package com.xiaohui.pocket.system.model.dto.file;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaohui.pocket.system.model.dto.UserLoginDto;
-import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
+import com.xiaohui.pocket.system.model.dto.user.UserLoginDto;
+import com.xiaohui.pocket.system.model.dto.user.UserRegisterDto;
 import com.xiaohui.pocket.system.model.entity.User;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
 

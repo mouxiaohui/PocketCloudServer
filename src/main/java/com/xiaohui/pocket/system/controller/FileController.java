@@ -7,17 +7,19 @@ import com.xiaohui.pocket.core.annotation.Log;
 import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
-import com.xiaohui.pocket.system.model.dto.*;
-import com.xiaohui.pocket.system.model.form.*;
-import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.UserFileVO;
+import com.xiaohui.pocket.system.model.dto.file.*;
+import com.xiaohui.pocket.system.model.form.file.*;
+import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
+import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
+import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,6 +69,22 @@ public class FileController {
 
         List<UserFileVO> userFileVOList = userFileService.getFileList(queryFileListDto);
         return Result.success(userFileVOList);
+    }
+
+    @Operation(summary = "文件搜索")
+    @GetMapping("/search")
+    @Log(value = "文件搜索", module = LogModuleEnum.File)
+    public Result<List<FileSearchResultVO>> search(@Validated FileSearchForm fileSearchForm) {
+        FileSearchDto fileSearchDto = new FileSearchDto();
+        fileSearchDto.setKeyword(fileSearchForm.getKeyword());
+        fileSearchDto.setUserId(BaseContext.getUserId());
+        String fileTypes = fileSearchForm.getFileTypes();
+        if (StringUtils.isNotBlank(fileTypes) && !Objects.equals(FileConstants.ALL_FILE_TYPE, fileTypes)) {
+            List<Integer> fileTypeArray = Arrays.stream(fileTypes.split(FileConstants.FILE_TYPE_SPLIT_CHAR)).map(Integer::valueOf).toList();
+            fileSearchDto.setFileTypeArray(fileTypeArray);
+        }
+        List<FileSearchResultVO> result = userFileService.search(fileSearchDto);
+        return Result.success(result);
     }
 
     @Operation(summary = "创建文件夹")

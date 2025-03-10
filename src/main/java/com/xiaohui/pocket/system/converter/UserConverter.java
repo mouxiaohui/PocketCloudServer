@@ -1,10 +1,10 @@
 package com.xiaohui.pocket.system.converter;
 
-import com.xiaohui.pocket.system.model.dto.UserLoginDto;
-import com.xiaohui.pocket.system.model.dto.UserRegisterDto;
+import com.xiaohui.pocket.system.model.dto.user.UserLoginDto;
+import com.xiaohui.pocket.system.model.dto.user.UserRegisterDto;
 import com.xiaohui.pocket.system.model.entity.User;
-import com.xiaohui.pocket.system.model.form.UserLoginForm;
-import com.xiaohui.pocket.system.model.form.UserRegisterForm;
+import com.xiaohui.pocket.system.model.form.user.UserLoginForm;
+import com.xiaohui.pocket.system.model.form.user.UserRegisterForm;
 import com.xiaohui.pocket.system.model.vo.UserInfoVO;
 import org.mapstruct.Mapper;
 

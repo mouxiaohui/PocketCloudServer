@@ -1,9 +1,9 @@
 package com.xiaohui.pocket.system.converter;
 
-import com.xiaohui.pocket.system.model.dto.*;
+import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.form.*;
+import com.xiaohui.pocket.system.model.form.file.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

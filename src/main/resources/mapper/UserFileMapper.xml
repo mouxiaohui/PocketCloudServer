@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohui.pocket.system.mapper.UserFileMapper">
 
-    <select id="selectFileList" resultType="com.xiaohui.pocket.system.model.vo.UserFileVO">
+    <!-- 查询用户的文件列表 -->
+    <select id="selectFileList" resultType="com.xiaohui.pocket.system.model.vo.file.UserFileVO">
         SELECT id,
         parent_id,
         filename,
@@ -26,6 +27,31 @@
         <if test="param.fileIdList!= null">
             AND id in
             <foreach collection="param.fileIdList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 文件搜索 -->
+    <select id="searchFile" resultType="com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO">
+        SELECT
+        uf.id,
+        uf.parent_id,
+        uf.filename,
+        uf.file_size_desc,
+        uf.folder_flag,
+        uf.file_type,
+        uf.update_time,
+        parent_uf.filename AS parent_filename
+        FROM
+        user_file uf
+        LEFT JOIN
+        user_file parent_uf ON uf.parent_id = parent_uf.id
+        WHERE uf.user_id = #{param.userId}
+        AND uf.filename LIKE CONCAT('%', #{param.keyword}, '%')
+        <if test="param.fileTypeArray != null">
+            AND uf.file_type IN
+            <foreach collection="param.fileTypeArray" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>

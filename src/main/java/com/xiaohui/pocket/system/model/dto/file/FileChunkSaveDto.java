@@ -1,16 +1,14 @@
-package com.xiaohui.pocket.system.model.dto;
+package com.xiaohui.pocket.system.model.dto.file;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 文件上传参数
- *
  * @author xiaohui
- * @since 2025/3/1
+ * @since 2025/3/8
  */
 @Data
-public class FileUploadDto {
+public class FileChunkSaveDto {
 
     /**
      * 文件名称
@@ -23,17 +21,28 @@ public class FileUploadDto {
     private String identifier;
 
     /**
-     * 文件大小
+     * 总体的分片数
+     */
+    private Integer totalChunks;
+
+    /**
+     * 当前分片下标
+     * 从1开始
+     */
+    private Integer chunkNumber;
+
+    /**
+     * 当前分片的大小
+     */
+    private Long currentChunkSize;
+
+    /**
+     * 文件的总大小
      */
     private Long totalSize;
 
     /**
-     * 文件的父文件夹ID
-     */
-    private Long parentId;
-
-    /**
-     * 要上传的文件实体
+     * 文件实体
      */
     private MultipartFile file;
 

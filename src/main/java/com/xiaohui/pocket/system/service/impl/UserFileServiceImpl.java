@@ -15,13 +15,14 @@ import com.xiaohui.pocket.system.enums.FileTypeEnum;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.enums.MergeFlagEnum;
 import com.xiaohui.pocket.system.mapper.UserFileMapper;
-import com.xiaohui.pocket.system.model.dto.*;
+import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.entity.FileChunk;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.vo.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
+import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
+import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
+import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -109,6 +110,17 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     @Override
     public List<UserFileVO> getFileList(QueryFileListDto queryFileListDto) {
         return this.baseMapper.selectFileList(queryFileListDto);
+    }
+
+    /**
+     * 文件列表搜索
+     *
+     * @param fileSearchDto 文件搜索参数
+     * @return 文件搜索结果列表
+     */
+    @Override
+    public List<FileSearchResultVO> search(FileSearchDto fileSearchDto) {
+        return this.baseMapper.searchFile(fileSearchDto);
     }
 
     /**

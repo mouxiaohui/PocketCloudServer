@@ -2,8 +2,8 @@ package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.enums.MergeFlagEnum;
-import com.xiaohui.pocket.system.model.dto.FileChunkSaveDto;
-import com.xiaohui.pocket.system.model.dto.QueryFileChunkListDto;
+import com.xiaohui.pocket.system.model.dto.file.FileChunkSaveDto;
+import com.xiaohui.pocket.system.model.dto.file.QueryFileChunkListDto;
 import com.xiaohui.pocket.system.model.entity.FileChunk;
 
 import java.util.List;

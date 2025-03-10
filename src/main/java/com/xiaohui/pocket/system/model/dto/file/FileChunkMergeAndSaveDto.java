@@ -1,4 +1,4 @@
-package com.xiaohui.pocket.system.model.dto;
+package com.xiaohui.pocket.system.model.dto.file;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import lombok.Data;
  * @since 2025/3/8
  */
 @Data
-public class FileChunkMergeDto {
+public class FileChunkMergeAndSaveDto {
 
     /**
      * 文件名称

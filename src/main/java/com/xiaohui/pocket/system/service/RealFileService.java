@@ -1,9 +1,9 @@
 package com.xiaohui.pocket.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaohui.pocket.system.model.dto.FileChunkMergeAndSaveDto;
-import com.xiaohui.pocket.system.model.dto.FileSaveDto;
-import com.xiaohui.pocket.system.model.dto.QueryRealFileListDto;
+import com.xiaohui.pocket.system.model.dto.file.FileChunkMergeAndSaveDto;
+import com.xiaohui.pocket.system.model.dto.file.FileSaveDto;
+import com.xiaohui.pocket.system.model.dto.file.QueryRealFileListDto;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 
 import java.util.List;

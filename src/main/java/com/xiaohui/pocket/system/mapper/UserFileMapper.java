@@ -1,9 +1,11 @@
 package com.xiaohui.pocket.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xiaohui.pocket.system.model.dto.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.file.FileSearchDto;
+import com.xiaohui.pocket.system.model.dto.file.QueryFileListDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.vo.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
+import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,5 +25,13 @@ public interface UserFileMapper extends BaseMapper<UserFile> {
      * @return 文件列表
      */
     List<UserFileVO> selectFileList(@Param("param") QueryFileListDto queryFileListDto);
+
+    /**
+     * 文件搜索
+     *
+     * @param fileSearchDto 文件搜索参数
+     * @return 文件搜索结果
+     */
+    List<FileSearchResultVO> searchFile(@Param("param") FileSearchDto fileSearchDto);
 
 }
