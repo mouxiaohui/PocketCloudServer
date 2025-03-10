@@ -15,6 +15,7 @@
         update_time
         FROM user_file
         WHERE user_id = #{param.userId}
+        AND is_deleted = 0
         <if test="param.parentId != null">
             AND parent_id = #{param.parentId}
         </if>
@@ -48,6 +49,7 @@
         LEFT JOIN
         user_file parent_uf ON uf.parent_id = parent_uf.id
         WHERE uf.user_id = #{param.userId}
+        AND uf.is_deleted = 0
         AND uf.filename LIKE CONCAT('%', #{param.keyword}, '%')
         <if test="param.fileTypeArray != null">
             AND uf.file_type IN
