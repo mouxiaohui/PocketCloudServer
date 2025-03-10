@@ -227,4 +227,22 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         return false;
     }
 
+    /**
+     * 批量删除用户文件
+     *
+     * @param deleteFileDto 文件删除参数
+     */
+    @Override
+    public void deleteFile(DeleteFileDto deleteFileDto) {
+        List<Long> fileIdList = deleteFileDto.getFileIdList();
+
+        // 删除文件记录
+        if (CollectionUtils.isNotEmpty(fileIdList)) {
+            QueryWrapper<UserFile> queryWrapper = Wrappers.query();
+            queryWrapper.in("id", fileIdList);
+            queryWrapper.in("user_id", deleteFileDto.getUserId());
+            remove(queryWrapper);
+        }
+    }
+
 }

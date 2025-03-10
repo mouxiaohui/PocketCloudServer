@@ -95,4 +95,13 @@ public interface UserFileService extends IService<UserFile> {
      */
     boolean secUpload(SecUploadFileDto secUploadFileDto);
 
+    /**
+     * 批量删除用户文件
+     *
+     * @param deleteFileDto 文件删除参数
+     */
+    void deleteFile(DeleteFileDto deleteFileDto);
+
+
+
 }
