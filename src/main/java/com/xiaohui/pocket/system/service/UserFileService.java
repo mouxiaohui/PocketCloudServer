@@ -3,10 +3,7 @@ package com.xiaohui.pocket.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
-import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.*;
 
 import java.util.List;
 
@@ -108,5 +105,13 @@ public interface UserFileService extends IService<UserFile> {
      * @param fileDownloadDto 文件下载参数
      */
     void download(FileDownloadDto fileDownloadDto);
+
+    /**
+     * 获取面包屑列表
+     *
+     * @param queryBreadcrumbsDto 查询面包屑列表参数
+     * @return 面包屑列表
+     */
+    List<BreadcrumbVO> getBreadcrumbs(QueryBreadcrumbsDto queryBreadcrumbsDto);
 
 }

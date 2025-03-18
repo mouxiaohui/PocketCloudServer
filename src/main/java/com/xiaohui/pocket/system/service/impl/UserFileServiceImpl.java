@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.FileUtils;
+import com.xiaohui.pocket.common.utils.HttpUtil;
 import com.xiaohui.pocket.storage.engine.core.StorageEngine;
 import com.xiaohui.pocket.storage.engine.dto.ReadFileDto;
 import com.xiaohui.pocket.system.constants.FileConstants;
@@ -21,10 +22,7 @@ import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.entity.FileChunk;
 import com.xiaohui.pocket.system.model.entity.RealFile;
 import com.xiaohui.pocket.system.model.entity.UserFile;
-import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
-import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.*;
 import com.xiaohui.pocket.system.service.FileChunkService;
 import com.xiaohui.pocket.system.service.RealFileService;
 import com.xiaohui.pocket.system.service.UserFileService;
@@ -34,9 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaohui
@@ -283,6 +280,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         HttpServletResponse response = fileDownloadDto.getResponse();
         response.reset();
 
+        // 添加跨域的响应头
+        HttpUtil.addCorsResponseHeaders(response);
         // 添加内容类型头，指定文件下载的MIME类型
         response.addHeader(FileConstants.CONTENT_TYPE_STR, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         // 设置响应的内容类型为二进制流
@@ -303,6 +302,33 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
             log.error("文件下载失败: {}", e.toString());
             throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
         }
+    }
+
+    /**
+     * 获取面包屑列表
+     *
+     * @param queryBreadcrumbsDto 查询面包屑列表参数
+     * @return 面包屑列表
+     */
+    @Override
+    public List<BreadcrumbVO> getBreadcrumbs(QueryBreadcrumbsDto queryBreadcrumbsDto) {
+        QueryWrapper<UserFile> queryWrapper = Wrappers.query();
+        queryWrapper.eq("user_id", queryBreadcrumbsDto.getUserId());
+        queryWrapper.eq("folder_flag", FolderFlagEnum.YES.getCode());
+        List<UserFile> folderRecords = list(queryWrapper);
+
+        Map<Long, BreadcrumbVO> prepareBreadcrumbVOMap = folderRecords.stream().map(BreadcrumbVO::transfer).collect(Collectors.toMap(BreadcrumbVO::getId, a -> a));
+        BreadcrumbVO currentNode;
+        Long fileId = queryBreadcrumbsDto.getFileId();
+        LinkedList<BreadcrumbVO> result = new LinkedList<>();
+        do {
+            currentNode = prepareBreadcrumbVOMap.get(fileId);
+            if (Objects.nonNull(currentNode)) {
+                result.add(0, currentNode);
+                fileId = currentNode.getParentId();
+            }
+        } while (Objects.nonNull(currentNode));
+        return result;
     }
 
 }

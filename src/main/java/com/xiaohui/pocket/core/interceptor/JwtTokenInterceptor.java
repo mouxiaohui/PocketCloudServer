@@ -46,8 +46,14 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         }
 
         try {
-            // 从请求头中获取令牌, 注意要清除前缀 "Bearer "
-            String token = Optional.ofNullable(request.getHeader(jwtProperties.getHeader()))
+            String token;
+            token = request.getHeader(jwtProperties.getHeader());
+            if (token == null || token.isBlank()) {
+                token = request.getParameter(jwtProperties.getHeader());
+            }
+
+            // 要清除前缀 "Bearer "
+            token = Optional.ofNullable(token)
                     .orElse("")
                     .replace("Bearer ", "");
 

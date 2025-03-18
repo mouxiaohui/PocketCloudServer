@@ -9,10 +9,7 @@ import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
 import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.form.file.*;
-import com.xiaohui.pocket.system.model.vo.file.FileChunkUploadVO;
-import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
-import com.xiaohui.pocket.system.model.vo.file.UploadedChunksVO;
-import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
+import com.xiaohui.pocket.system.model.vo.file.*;
 import com.xiaohui.pocket.system.service.UserFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -175,7 +172,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件下载")
-    @GetMapping
+    @GetMapping("/download")
     @Log(value = "文件下载", module = LogModuleEnum.File)
     public void download(
             @NotBlank(message = "文件ID不能为空")
@@ -187,6 +184,16 @@ public class FileController {
         fileDownloadDto.setUserId(BaseContext.getUserId());
         fileDownloadDto.setResponse(response);
         userFileService.download(fileDownloadDto);
+    }
+
+    @Operation(summary = "查询面包屑列表")
+    @GetMapping("/breadcrumbs")
+    public Result<List<BreadcrumbVO>> getBreadcrumbs(@NotBlank(message = "文件ID不能为空") @RequestParam(value = "fileId", required = false) String fileId) {
+        QueryBreadcrumbsDto queryBreadcrumbsDto = new QueryBreadcrumbsDto();
+        queryBreadcrumbsDto.setFileId(IdUtil.decrypt(fileId));
+        queryBreadcrumbsDto.setUserId(BaseContext.getUserId());
+        List<BreadcrumbVO> result = userFileService.getBreadcrumbs(queryBreadcrumbsDto);
+        return Result.success(result);
     }
 
 }
