@@ -16,7 +16,7 @@
         FROM user_file
         WHERE user_id = #{param.userId}
         AND is_deleted = 0
-        <if test="param.parentId != null">
+        <if test="param.parentId != null and param.parentId != -1">
             AND parent_id = #{param.parentId}
         </if>
         <if test="param.fileTypeArray != null">

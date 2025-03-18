@@ -59,8 +59,12 @@ public class FileController {
                     .map(Integer::valueOf).toList();
         }
 
+        Long realParentId = -1L;
+        if (!FileConstants.ALL_FILE_TYPE.equals(parentId)) {
+            realParentId = IdUtil.decrypt(parentId);
+        }
         QueryFileListDto queryFileListDto = QueryFileListDto.builder()
-                .parentId(IdUtil.decrypt(parentId))
+                .parentId(realParentId)
                 .fileTypeArray(fileTypeArray)
                 .userId(BaseContext.getUserId())
                 .build();
