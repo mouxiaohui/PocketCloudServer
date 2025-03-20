@@ -200,4 +200,17 @@ public class FileController {
         return Result.success(result);
     }
 
+    @Operation(summary = "文件预览")
+    @GetMapping("/preview")
+    public void preview(
+            @NotBlank(message = "文件ID不能为空")
+            @RequestParam(value = "fileId", required = false) String fileId,
+            HttpServletResponse response) {
+        FilePreviewDto filePreviewDto = new FilePreviewDto();
+        filePreviewDto.setFileId(IdUtil.decrypt(fileId));
+        filePreviewDto.setResponse(response);
+        filePreviewDto.setUserId(BaseContext.getUserId());
+        userFileService.preview(filePreviewDto);
+    }
+
 }

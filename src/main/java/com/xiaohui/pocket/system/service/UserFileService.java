@@ -114,4 +114,11 @@ public interface UserFileService extends IService<UserFile> {
      */
     List<BreadcrumbVO> getBreadcrumbs(QueryBreadcrumbsDto queryBreadcrumbsDto);
 
+    /**
+     * 文件预览
+     *
+     * @param filePreviewDto 文件预览参数
+     */
+    void preview(FilePreviewDto filePreviewDto);
+
 }

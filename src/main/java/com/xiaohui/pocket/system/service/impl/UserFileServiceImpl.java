@@ -32,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -257,51 +259,23 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
      */
     @Override
     public void download(FileDownloadDto fileDownloadDto) {
-        UserFile userFile = getById(fileDownloadDto.getFileId());
-        if (Objects.isNull(userFile)) {
-            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
-        }
-        // 校验文件归属
-        if (!userFile.getUserId().equals(fileDownloadDto.getUserId())) {
-            throw new BusinessException(ResultCode.FILE_OPERATION_PERMISSION_DENIED);
-        }
+        UserFile userFile = getUserFileAndCheck(fileDownloadDto.getFileId(), fileDownloadDto.getUserId());
         // 校验文件是否为文件夹
-        if (FolderFlagEnum.YES.getCode().equals(userFile.getFolderFlag())) {
+        if (checkIsFolder(userFile)) {
             throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
         }
 
-        // 获取文件实体记录
-        RealFile realFile = realFileService.getById(userFile.getRealFileId());
-        if (Objects.isNull(realFile)) {
-            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
-        }
+        RealFile realFile = getRealFileAndCheck(userFile.getRealFileId());
 
         // 获取文件下载响应对象，并重置响应内容
         HttpServletResponse response = fileDownloadDto.getResponse();
         response.reset();
 
-        // 添加跨域的响应头
-        HttpUtil.addCorsResponseHeaders(response);
-        // 添加内容类型头，指定文件下载的MIME类型
-        response.addHeader(FileConstants.CONTENT_TYPE_STR, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        // 设置响应的内容类型为二进制流
-        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        // 设置文件下载的Content-Length头信息，告知文件大小
-        response.setContentLengthLong(Long.parseLong(realFile.getFileSize()));
-
-        try {
-            // 尝试设置文件下载的Disposition头信息，包括文件名称
-            response.addHeader(FileConstants.CONTENT_DISPOSITION_STR,
-                    FileConstants.CONTENT_DISPOSITION_VALUE_PREFIX_STR + new String(userFile.getFilename().getBytes(FileConstants.GB2312_STR), FileConstants.IOS_8859_1_STR));
-
-            ReadFileDto readFileDto = new ReadFileDto();
-            readFileDto.setRealPath(realFile.getRealPath());
-            readFileDto.setOutputStream(response.getOutputStream());
-            storageEngine.readFile(readFileDto);
-        } catch (Exception e) {
-            log.error("文件下载失败: {}", e.toString());
-            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
-        }
+        // 添加文件响应头
+        addFileResponseHeader(response, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        // 添加文件下载的响应头
+        addDownloadAttribute(response, userFile, realFile);
+        realFileToOutputStream(realFile.getRealPath(), response);
     }
 
     /**
@@ -329,6 +303,125 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
             }
         } while (Objects.nonNull(currentNode));
         return result;
+    }
+
+    /**
+     * 文件预览
+     *
+     * @param filePreviewDto 文件预览参数
+     */
+    @Override
+    public void preview(FilePreviewDto filePreviewDto) {
+        UserFile userFile = getUserFileAndCheck(filePreviewDto.getFileId(), filePreviewDto.getUserId());
+        // 校验文件是否为文件夹
+        if (checkIsFolder(userFile)) {
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
+
+        RealFile realFile = getRealFileAndCheck(userFile.getRealFileId());
+        addFileResponseHeader(filePreviewDto.getResponse(), realFile.getFilePreviewContentType());
+        realFileToOutputStream(realFile.getRealPath(), filePreviewDto.getResponse());
+    }
+
+    /**
+     * 根据用户文件ID获取用户文件实体记录
+     *
+     * @param userFileId 用户文件ID
+     * @param userId     用户ID
+     * @return 用户文件实体记录
+     */
+    private UserFile getUserFileAndCheck(Long userFileId, Long userId) {
+        UserFile userFile = getById(userFileId);
+        checkOperatePermission(userFile, userId);
+
+        return userFile;
+    }
+
+    /**
+     * 根据真实文件ID获取真实文件实体记录
+     *
+     * @param realFileId 真实文件ID
+     * @return 真实文件实体记录
+     */
+    private RealFile getRealFileAndCheck(Long realFileId) {
+        RealFile realFile = realFileService.getById(realFileId);
+        if (Objects.isNull(realFile)) {
+            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
+        }
+
+        return realFile;
+    }
+
+    /**
+     * 校验用户的操作权限
+     * <p>
+     * 1、文件记录必须存在
+     * 2、文件记录的创建者必须是该登录用户
+     */
+    private void checkOperatePermission(UserFile userFile, Long userId) {
+        if (Objects.isNull(userFile)) {
+            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
+        }
+        if (!userFile.getUserId().equals(userId)) {
+            throw new BusinessException(ResultCode.FILE_OPERATION_PERMISSION_DENIED);
+        }
+    }
+
+    /**
+     * 检查当前文件记录是不是一个文件夹
+     *
+     * @param userFile 当前文件记录
+     * @return 是否是文件夹
+     */
+    private boolean checkIsFolder(UserFile userFile) {
+        if (Objects.isNull(userFile)) {
+            throw new BusinessException(ResultCode.FILE_RECORD_NOT_EXIST);
+        }
+        return FolderFlagEnum.YES.getCode().equals(userFile.getFolderFlag());
+    }
+
+    /**
+     * 添加公共的文件读取响应头
+     */
+    private void addFileResponseHeader(HttpServletResponse response, String contentTypeValue) {
+        response.reset();
+        HttpUtil.addCorsResponseHeaders(response);
+        response.addHeader(FileConstants.CONTENT_TYPE_STR, contentTypeValue);
+        response.setContentType(contentTypeValue);
+    }
+
+    /**
+     * 添加文件下载的属性信息
+     */
+    private void addDownloadAttribute(HttpServletResponse response, UserFile userFile, RealFile realFile) {
+        // 设置文件下载的Content-Length头信息，告知文件大小
+        response.setContentLengthLong(Long.parseLong(realFile.getFileSize()));
+        try {
+            // 尝试设置文件下载的Disposition头信息，包括文件名称
+            response.addHeader(FileConstants.CONTENT_DISPOSITION_STR,
+                    FileConstants.CONTENT_DISPOSITION_VALUE_PREFIX_STR + new String(userFile.getFilename().getBytes(FileConstants.GB2312_STR), FileConstants.IOS_8859_1_STR));
+        } catch (UnsupportedEncodingException e) {
+            log.error("文件下载失败: {}", e.toString());
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
+    }
+
+    /**
+     * 委托文件存储引擎去读取文件内容并写入到输出流中
+     *
+     * @param realPath 真实文件路径
+     * @param response 响应对象
+     */
+    private void realFileToOutputStream(String realPath, HttpServletResponse response) {
+        try {
+            ReadFileDto readFileDto = new ReadFileDto();
+            readFileDto.setRealPath(realPath);
+            readFileDto.setOutputStream(response.getOutputStream());
+            storageEngine.readFile(readFileDto);
+        } catch (IOException e) {
+            log.error("文件下载失败: {}", e.toString());
+            throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);
+        }
     }
 
 }
