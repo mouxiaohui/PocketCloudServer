@@ -7,6 +7,7 @@ import com.xiaohui.pocket.core.annotation.Log;
 import com.xiaohui.pocket.core.context.BaseContext;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
+import com.xiaohui.pocket.system.enums.DelFlagEnum;
 import com.xiaohui.pocket.system.model.dto.file.*;
 import com.xiaohui.pocket.system.model.form.file.*;
 import com.xiaohui.pocket.system.model.vo.file.*;
@@ -67,6 +68,7 @@ public class FileController {
                 .parentId(realParentId)
                 .fileTypeArray(fileTypeArray)
                 .userId(BaseContext.getUserId())
+                .isDeleted(DelFlagEnum.NO.getCode())
                 .build();
 
         List<UserFileVO> userFileVOList = userFileService.getFileList(queryFileListDto);

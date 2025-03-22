@@ -125,7 +125,7 @@ public class LogAspect {
             // 中国|0|四川省|成都市|电信 解析省和市
             if (StrUtil.isNotBlank(region)) {
                 String[] regionArray = region.split("\\|");
-                if (regionArray.length > 2) {
+                if (regionArray.length > 3) {
                     log.setProvince(regionArray[2]);
                     log.setCity(regionArray[3]);
                 }

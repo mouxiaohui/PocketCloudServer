@@ -15,7 +15,6 @@
         update_time
         FROM user_file
         WHERE user_id = #{param.userId}
-        AND is_deleted = 0
         <if test="param.parentId != null and param.parentId != -1">
             AND parent_id = #{param.parentId}
         </if>
@@ -31,6 +30,13 @@
                 #{item}
             </foreach>
         </if>
+        <if test="param.fileTypeArray != null">
+            AND file_type in
+            <foreach collection="param.fileTypeArray" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        AND is_deleted = #{param.isDeleted}
     </select>
 
     <!-- 文件搜索 -->
