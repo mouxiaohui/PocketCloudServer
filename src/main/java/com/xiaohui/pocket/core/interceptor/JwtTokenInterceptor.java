@@ -18,7 +18,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * jwt令牌校验的拦截器
@@ -53,14 +52,14 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             }
 
             // 要清除前缀 "Bearer "
-            token = Optional.ofNullable(token)
-                    .orElse("")
-                    .replace("Bearer ", "");
+//            token = Optional.ofNullable(token)
+//                    .orElse("")
+//                    .replace("Bearer ", "");
 
-            if (token.isEmpty()) {
-                handleUnauthorizedResponse(response);
-                return false;
-            }
+//            if (token.isEmpty()) {
+//                handleUnauthorizedResponse(response);
+//                return false;
+//            }
 
             // 校验令牌
             Claims claim = jwtUtils.analyzeToken(token);
