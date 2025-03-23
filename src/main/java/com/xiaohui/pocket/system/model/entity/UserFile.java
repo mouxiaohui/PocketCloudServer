@@ -1,7 +1,6 @@
 package com.xiaohui.pocket.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xiaohui.pocket.common.base.BaseEntity;
 import lombok.Getter;
@@ -71,11 +70,5 @@ public class UserFile extends BaseEntity {
      */
     @TableField(value = "update_user")
     private Long updateUser;
-
-    /**
-     * 逻辑删除标识(0-未删除 1-已删除)
-     */
-    @TableLogic(value = "0", delval = "1")
-    private Integer isDeleted;
 
 }

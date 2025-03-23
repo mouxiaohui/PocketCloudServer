@@ -14,6 +14,7 @@ import com.xiaohui.pocket.storage.engine.core.StorageEngine;
 import com.xiaohui.pocket.storage.engine.dto.ReadFileDto;
 import com.xiaohui.pocket.system.constants.FileConstants;
 import com.xiaohui.pocket.system.converter.FileConverter;
+import com.xiaohui.pocket.system.enums.DelFlagEnum;
 import com.xiaohui.pocket.system.enums.FileTypeEnum;
 import com.xiaohui.pocket.system.enums.FolderFlagEnum;
 import com.xiaohui.pocket.system.enums.MergeFlagEnum;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -242,13 +244,16 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     @Override
     public void deleteFile(DeleteFileDto deleteFileDto) {
         List<Long> fileIdList = deleteFileDto.getFileIdList();
-
-        // 删除文件记录
         if (CollectionUtils.isNotEmpty(fileIdList)) {
-            QueryWrapper<UserFile> queryWrapper = Wrappers.query();
-            queryWrapper.in("id", fileIdList);
-            queryWrapper.in("user_id", deleteFileDto.getUserId());
-            remove(queryWrapper);
+            LambdaUpdateWrapper<UserFile> wrapper = Wrappers.lambdaUpdate();
+            wrapper.in(UserFile::getId, fileIdList)
+                    .eq(UserFile::getUserId, deleteFileDto.getUserId())
+                    // 显式设置 is_deleted 和 update_time
+                    .set(UserFile::getIsDeleted, DelFlagEnum.YES.getCode())
+                    .set(UserFile::getUpdateUser, deleteFileDto.getUserId())
+                    .set(UserFile::getUpdateTime, LocalDateTime.now());
+
+            update(wrapper);
         }
     }
 
