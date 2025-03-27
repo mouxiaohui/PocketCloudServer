@@ -4,6 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohui.pocket.system.mapper.UserFileMapper">
 
+    <!-- 更新文件是否删除 -->
+    <update id="updateIsDeleted">
+        UPDATE user_file
+        SET is_deleted  = #{param.isDeleted},
+            update_time = #{param.updateTime}
+        WHERE id = #{param.fileId}
+          AND user_id = #{param.userId}
+    </update>
+
     <!-- 查询用户的文件列表 -->
     <select id="selectFileList" resultType="com.xiaohui.pocket.system.model.vo.file.UserFileVO">
         SELECT id,
@@ -63,6 +72,20 @@
                 #{item}
             </foreach>
         </if>
+    </select>
+
+    <!-- 查询用户删除的文件列表 -->
+    <select id="selectDelFileList" resultType="com.xiaohui.pocket.system.model.entity.UserFile">
+        SELECT *
+        FROM user_file
+        WHERE user_id = #{param.userId}
+        <if test="param.fileIdList!= null">
+            AND id in
+            <foreach collection="param.fileIdList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        AND is_deleted = #{param.isDeleted}
     </select>
 
 </mapper>

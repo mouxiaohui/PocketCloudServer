@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.system.service;
 
+import com.xiaohui.pocket.system.model.dto.recycle.RestoreDto;
 import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 
 import java.util.List;
@@ -17,5 +18,12 @@ public interface RecycleService {
      * @return 回收站文件列表
      */
     List<UserFileVO> getRecycleFileList(Long userId);
+
+    /**
+     * 文件还原
+     *
+     * @param restoreDto 文件还原参数
+     */
+    void restore(RestoreDto restoreDto);
 
 }

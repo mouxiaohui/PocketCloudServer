@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaohui.pocket.common.constants.PocketConstants;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.common.result.ResultCode;
 import com.xiaohui.pocket.common.utils.FileUtils;
@@ -118,6 +119,35 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     @Override
     public List<UserFileVO> getFileList(QueryFileListDto queryFileListDto) {
         return this.baseMapper.selectFileList(queryFileListDto);
+    }
+
+    /**
+     * 查询文件信息列表
+     *
+     * @param queryDelFileListDto 查询删除文件信息列表参数
+     * @return 文件信息列表
+     */
+    @Override
+    public List<UserFile> getDelFileList(QueryDelFileListDto queryDelFileListDto) {
+        return this.baseMapper.selectDelFileList(queryDelFileListDto);
+    }
+
+    /**
+     * 取消删除文件
+     *
+     * @param userId 用户ID
+     * @param fileId 文件ID
+     * @return 是否成功
+     */
+    @Override
+    public boolean undeleteFile(Long userId, Long fileId) {
+        UpdateIsDeletedDto updateIsDeletedDto = UpdateIsDeletedDto.builder()
+                .isDeleted(DelFlagEnum.NO.getCode())
+                .userId(userId)
+                .fileId(fileId)
+                .updateTime(LocalDateTime.now())
+                .build();
+        return this.baseMapper.updateIsDeleted(updateIsDeletedDto);
     }
 
     /**
@@ -391,7 +421,7 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     private void addFileResponseHeader(HttpServletResponse response, String contentTypeValue) {
         response.reset();
         HttpUtil.addCorsResponseHeaders(response);
-        response.addHeader(FileConstants.CONTENT_TYPE_STR, contentTypeValue);
+        response.addHeader(PocketConstants.CONTENT_TYPE_STR, contentTypeValue);
         response.setContentType(contentTypeValue);
     }
 
@@ -403,8 +433,8 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
         response.setContentLengthLong(Long.parseLong(realFile.getFileSize()));
         try {
             // 尝试设置文件下载的Disposition头信息，包括文件名称
-            response.addHeader(FileConstants.CONTENT_DISPOSITION_STR,
-                    FileConstants.CONTENT_DISPOSITION_VALUE_PREFIX_STR + new String(userFile.getFilename().getBytes(FileConstants.GB2312_STR), FileConstants.IOS_8859_1_STR));
+            response.addHeader(PocketConstants.CONTENT_DISPOSITION_STR,
+                    PocketConstants.CONTENT_DISPOSITION_VALUE_PREFIX_STR + new String(userFile.getFilename().getBytes(PocketConstants.GB2312_STR), PocketConstants.IOS_8859_1_STR));
         } catch (UnsupportedEncodingException e) {
             log.error("文件下载失败: {}", e.toString());
             throw new BusinessException(ResultCode.FILE_DOWNLOAD_FAILED);

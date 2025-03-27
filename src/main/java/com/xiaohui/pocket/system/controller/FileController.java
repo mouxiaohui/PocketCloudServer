@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.system.controller;
 
+import com.xiaohui.pocket.common.constants.PocketConstants;
 import com.xiaohui.pocket.common.enums.LogModuleEnum;
 import com.xiaohui.pocket.common.result.Result;
 import com.xiaohui.pocket.common.utils.IdUtil;
@@ -56,7 +57,7 @@ public class FileController {
     ) {
         List<Integer> fileTypeArray = null;
         if (!Objects.equals(FileConstants.ALL_FILE_TYPE, fileTypes)) {
-            fileTypeArray = Arrays.stream(fileTypes.split(FileConstants.COMMON_SEPARATOR))
+            fileTypeArray = Arrays.stream(fileTypes.split(PocketConstants.COMMON_SEPARATOR))
                     .map(Integer::valueOf).toList();
         }
 
@@ -84,7 +85,7 @@ public class FileController {
         fileSearchDto.setUserId(BaseContext.getUserId());
         String fileTypes = fileSearchForm.getFileTypes();
         if (StringUtils.isNotBlank(fileTypes) && !Objects.equals(FileConstants.ALL_FILE_TYPE, fileTypes)) {
-            List<Integer> fileTypeArray = Arrays.stream(fileTypes.split(FileConstants.COMMON_SEPARATOR)).map(Integer::valueOf).toList();
+            List<Integer> fileTypeArray = Arrays.stream(fileTypes.split(PocketConstants.COMMON_SEPARATOR)).map(Integer::valueOf).toList();
             fileSearchDto.setFileTypeArray(fileTypeArray);
         }
         List<FileSearchResultVO> result = userFileService.search(fileSearchDto);
@@ -169,7 +170,7 @@ public class FileController {
         deleteFileDto.setUserId(BaseContext.getUserId());
 
         String fileIds = deleteFileForm.getFileIds();
-        List<Long> list = Arrays.stream(fileIds.split(FileConstants.COMMON_SEPARATOR)).map(IdUtil::decrypt).toList();
+        List<Long> list = Arrays.stream(fileIds.split(PocketConstants.COMMON_SEPARATOR)).map(IdUtil::decrypt).toList();
         deleteFileDto.setFileIdList(list);
 
         userFileService.deleteFile(deleteFileDto);

@@ -2,7 +2,9 @@ package com.xiaohui.pocket.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaohui.pocket.system.model.dto.file.FileSearchDto;
+import com.xiaohui.pocket.system.model.dto.file.QueryDelFileListDto;
 import com.xiaohui.pocket.system.model.dto.file.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.file.UpdateIsDeletedDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.file.FileSearchResultVO;
 import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
@@ -25,6 +27,22 @@ public interface UserFileMapper extends BaseMapper<UserFile> {
      * @return 文件列表
      */
     List<UserFileVO> selectFileList(@Param("param") QueryFileListDto queryFileListDto);
+
+    /**
+     * 查询用户的文件列表
+     *
+     * @param queryDelFileListDto 查询参数
+     * @return 文件列表
+     */
+    List<UserFile> selectDelFileList(@Param("param") QueryDelFileListDto queryDelFileListDto);
+
+    /**
+     * 更新文件删除状态
+     *
+     * @param updateIsDeletedDto 更新文件删除状态参数
+     * @return 是否更新成功
+     */
+    boolean updateIsDeleted(@Param("param") UpdateIsDeletedDto updateIsDeletedDto);
 
     /**
      * 文件搜索

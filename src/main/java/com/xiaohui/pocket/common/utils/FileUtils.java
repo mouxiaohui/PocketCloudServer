@@ -3,7 +3,7 @@ package com.xiaohui.pocket.common.utils;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.xiaohui.pocket.system.constants.FileConstants;
+import com.xiaohui.pocket.common.constants.PocketConstants;
 import jakarta.activation.MimetypesFileTypeMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +99,7 @@ public class FileUtils {
      * @return 文件分片的存储路径
      */
     public static String generateStoreFileChunkRealPath(String basePath, String identifier, Integer chunkNumber) {
-        return basePath + File.separator + DateUtil.thisYear() + File.separator + (DateUtil.thisMonth() + 1) + File.separator + DateUtil.thisDayOfMonth() + File.separator + identifier + File.separator + IdUtil.randomUUID() + FileConstants.COMMON_SEPARATOR + chunkNumber;
+        return basePath + File.separator + DateUtil.thisYear() + File.separator + (DateUtil.thisMonth() + 1) + File.separator + DateUtil.thisDayOfMonth() + File.separator + identifier + File.separator + IdUtil.randomUUID() + PocketConstants.COMMON_SEPARATOR + chunkNumber;
     }
 
     /**

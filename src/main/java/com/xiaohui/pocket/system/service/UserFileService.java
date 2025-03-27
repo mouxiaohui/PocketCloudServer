@@ -47,6 +47,23 @@ public interface UserFileService extends IService<UserFile> {
     List<UserFileVO> getFileList(QueryFileListDto queryFileListDto);
 
     /**
+     * 查询文件信息列表
+     *
+     * @param queryDelFileListDto 查询删除文件信息列表参数
+     * @return 文件信息列表
+     */
+    List<UserFile> getDelFileList(QueryDelFileListDto queryDelFileListDto);
+
+    /**
+     * 取消删除文件
+     *
+     * @param userId 用户ID
+     * @param fileId 文件ID
+     * @return 是否成功
+     */
+    boolean undeleteFile(Long userId, Long fileId);
+
+    /**
      * 文件列表搜索
      *
      * @param fileSearchDto 文件搜索参数
