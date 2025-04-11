@@ -1,5 +1,6 @@
 package com.xiaohui.pocket.system.service;
 
+import com.xiaohui.pocket.system.model.dto.recycle.DeleteDto;
 import com.xiaohui.pocket.system.model.dto.recycle.RestoreDto;
 import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
 
@@ -26,4 +27,10 @@ public interface RecycleService {
      */
     void restore(RestoreDto restoreDto);
 
+    /**
+     * 文件彻底删除
+     *
+     * @param deleteDto 文件删除参数
+     */
+    void delete(DeleteDto deleteDto);
 }

@@ -138,4 +138,12 @@ public interface UserFileService extends IService<UserFile> {
      */
     void preview(FilePreviewDto filePreviewDto);
 
+    /**
+     * 递归查询所有的子文件信息
+     *
+     * @param userFileList 文件信息列表
+     * @return 所有子文件信息
+     */
+    List<UserFile> findAllUserFile(List<UserFile> userFileList);
+
 }

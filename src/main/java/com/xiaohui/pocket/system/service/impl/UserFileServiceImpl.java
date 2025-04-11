@@ -359,6 +359,58 @@ public class UserFileServiceImpl extends ServiceImpl<UserFileMapper, UserFile> i
     }
 
     /**
+     * 递归查询所有的子文件信息
+     *
+     * @param userFileList 文件信息列表
+     * @return 所有子文件信息
+     */
+    @Override
+    public List<UserFile> findAllUserFile(List<UserFile> userFileList) {
+        List<UserFile> result = new ArrayList<>(userFileList);
+        if (result.isEmpty()) {
+            return result;
+        }
+
+        Set<Long> processedFolderIds = new HashSet<>();
+        userFileList.forEach(userFile -> {
+            doFindAllChildRecords(result, userFile, processedFolderIds);
+        });
+
+        return result;
+    }
+
+    /**
+     * 递归查询所有的子文件列表
+     */
+    private void doFindAllChildRecords(List<UserFile> result, UserFile userFile, Set<Long> processedFolderIds) {
+        if (!checkIsFolder(userFile)) {
+            return;
+        }
+
+        Long folderId = userFile.getId();
+        if (!processedFolderIds.add(folderId)) {
+            return; // 已处理过的文件夹直接返回，防止循环引用
+        }
+
+        try {
+            QueryChildFileListDto queryDto = QueryChildFileListDto.builder()
+                    .userId(userFile.getUserId())
+                    .parentId(folderId)
+                    .build();
+
+            List<UserFile> childFiles = this.baseMapper.selectChildFileList(queryDto);
+            if (!childFiles.isEmpty()) {
+                result.addAll(childFiles);
+                childFiles.stream()
+                        .filter(child -> FolderFlagEnum.YES.getCode().equals(child.getFolderFlag()))
+                        .forEach(child -> doFindAllChildRecords(result, child, processedFolderIds));
+            }
+        } catch (Exception e) {
+            throw new BusinessException("查询子文件失败，文件夹：" + userFile.getFilename());
+        }
+    }
+
+    /**
      * 根据用户文件ID获取用户文件实体记录
      *
      * @param userFileId 用户文件ID

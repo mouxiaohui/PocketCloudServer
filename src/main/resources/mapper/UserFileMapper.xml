@@ -88,4 +88,12 @@
         AND is_deleted = #{param.isDeleted}
     </select>
 
+    <!--  查询子文件列表  -->
+    <select id="selectChildFileList" resultType="com.xiaohui.pocket.system.model.entity.UserFile">
+        SELECT *
+        FROM user_file
+        WHERE user_id = #{param.userId}
+          AND parent_id = #{param.parentId}
+    </select>
+
 </mapper>

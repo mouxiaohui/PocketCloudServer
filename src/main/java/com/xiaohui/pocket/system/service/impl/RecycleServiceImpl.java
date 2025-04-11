@@ -1,11 +1,15 @@
 package com.xiaohui.pocket.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xiaohui.pocket.common.constants.PocketConstants;
 import com.xiaohui.pocket.common.exception.BusinessException;
 import com.xiaohui.pocket.system.enums.DelFlagEnum;
 import com.xiaohui.pocket.system.model.dto.file.QueryDelFileListDto;
 import com.xiaohui.pocket.system.model.dto.file.QueryFileListDto;
+import com.xiaohui.pocket.system.model.dto.recycle.DeleteDto;
 import com.xiaohui.pocket.system.model.dto.recycle.RestoreDto;
 import com.xiaohui.pocket.system.model.entity.UserFile;
 import com.xiaohui.pocket.system.model.vo.file.UserFileVO;
@@ -65,6 +69,23 @@ public class RecycleServiceImpl implements RecycleService {
                 throw new BusinessException("文件还原失败");
             }
         });
+    }
+
+    /**
+     * 文件彻底删除
+     *
+     * @param deleteDto 文件删除参数
+     */
+    @Override
+    public void delete(DeleteDto deleteDto) {
+        QueryWrapper<UserFile> queryWrapper = Wrappers.query();
+        queryWrapper.eq("user_id", deleteDto.getUserId());
+        queryWrapper.in("file_id", deleteDto.getFileIdList());
+        List<UserFile> userFileList = userFileService.list(queryWrapper);
+        if (CollectionUtils.isEmpty(userFileList) || userFileList.size() != deleteDto.getFileIdList().size()) {
+            throw new BusinessException("您无权删除该文件");
+        }
+        List<UserFile> allUserFile = userFileService.findAllUserFile(userFileList);
     }
 
     /**
